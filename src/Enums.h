@@ -11,6 +11,7 @@ enum class MenuDirection : uint8_t {
 
 enum class GameState : uint8_t {
     Menu,
+    Menu_Select,
     GamePlay,
     ShowMenu,
     Map,

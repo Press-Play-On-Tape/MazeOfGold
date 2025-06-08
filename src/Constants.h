@@ -14,7 +14,7 @@ namespace Constants {
 	static constexpr uint8_t MazeHeight = 23;
 	static constexpr uint8_t MazeWidth = 23;
 	static constexpr uint8_t MaxChests = 10;
-	static constexpr uint8_t MaxEnemys = 20;
+	static constexpr uint8_t MaxEnemys = 12;
 	static constexpr uint8_t MaxItems = 4;
 
 	//                        0  1  2  3  4  5  6  7  8  9  0  1  2

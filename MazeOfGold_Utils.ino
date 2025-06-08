@@ -1,4 +1,4 @@
-#include <Arduboy2.h>
+#include <Arduboy2Core.h>
 #include <Sprites.h>
 
 
@@ -139,6 +139,11 @@ void checkCollisions(uint8_t level) {
 
             if (maze.getActiveChests() == 0) {
                 gameState = GameState::LevelUp;
+            }
+            else {
+            
+                displayChests = 12;
+
             }
         
         }

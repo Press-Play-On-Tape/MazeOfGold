@@ -1,7 +1,7 @@
-#include <Arduboy2.h>
+#include <Arduboy2Core.h>
 #include <Sprites.h>
 
-void drawChestCount(uint8_t x, uint8_t y) {
+void drawChestCount(int8_t x, uint8_t y) {
 
     Sprites::drawExternalMask(x, y, Images::Score, Images::Score_Mask, maze.getActiveChests() - 1, 0);
     
@@ -389,8 +389,89 @@ void drawEnemies(uint8_t level) {
         Enemy &enemy = maze.getEnemy(i);
 
         if (enemy.isActive() && enemy.level == level) {
-            uint8_t idx = enemy.dir * 2 + (((enemy.x + enemy.y) % 8) < 4);
-            Sprites::drawSelfMasked(enemy.x - camera.x, enemy.y - camera.y, Images::Enemy_Img, idx);
+
+            if (enemy.x - camera.x >= -12 && enemy.x - camera.x < 128 && enemy.y - camera.y > -12 && enemy.y - camera.y < 64) {
+
+                uint8_t idx = enemy.dir * 2 + (((enemy.x + enemy.y) % 8) < 4);
+                Sprites::drawSelfMasked(enemy.x - camera.x, enemy.y - camera.y, Images::Enemy_Img, idx);
+
+            }
+
+            else {
+            
+                if (showEnemyCursors == 0 && gameState == GameState::GamePlay && arduboy.frameCount %16 < 8) {
+                    
+                    int16_t x = enemy.x - camera.x;
+                    int16_t y = enemy.y - camera.y;
+                    uint8_t idx = 0;
+
+                    if (x < -64 || x > 128 + 64 || y < -64 || y > 64 + 64) {
+                    
+                        idx = 1;
+                        
+                    }
+
+                    // Off left hand side ..
+
+                    if (x < -12 && y < 0) {
+
+                        Sprites::drawOverwrite(-5, -2, Images::Cursor, idx);
+
+                    }
+                
+                    else if (x < -12 && y >= 0 && y < 64) {
+
+                        Sprites::drawOverwrite(-5, y + 2, Images::Cursor, idx);
+
+                    }
+                
+                    else if (x < -12 && y >= 64) {
+
+                        Sprites::drawOverwrite(-5, 61, Images::Cursor, idx);
+
+                    }
+                
+                    // Off top
+
+                    else if (x > -12 && x < 128 && y < 0) {
+
+                        Sprites::drawOverwrite(x + 2, -5, Images::Cursor, idx);
+
+                    }
+                
+                    // Off Bottom
+
+                    else if (x > -12 && x < 128 && y > 64) {
+
+                        Sprites::drawOverwrite(x + 2, 61, Images::Cursor, idx);
+
+                    }
+
+
+                    // Off right hand side ..
+                    
+                    else if (x >= 128 && y < 0) {
+
+                        Sprites::drawOverwrite(125, -4, Images::Cursor, idx);
+
+                    }
+
+                    else if (x >= 128 && y >= 0 && y < 64) {
+
+                        Sprites::drawOverwrite(125, y + 2, Images::Cursor, idx);
+
+                    }
+
+                    else if (x >= 128 && y >= 64) {
+
+                        Sprites::drawOverwrite(125, 61, Images::Cursor, idx);
+
+                    }
+
+                }
+            
+            }
+
         }
 
     }
@@ -497,7 +578,7 @@ void drawMenu() {
         y = y + 16;
     }
 
-    if (arduboy.frameCount % 48 < 24) {
+    if (arduboy.frameCount % 24 < 12) {
         Sprites::drawSelfMasked(menu.x + 4, 8 + ((menu.y - menu.top) * 16), Images::MenuCursor, 0);
     }
 

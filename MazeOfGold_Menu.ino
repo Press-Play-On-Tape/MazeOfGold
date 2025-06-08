@@ -1,4 +1,4 @@
-#include <Arduboy2.h>
+#include <Arduboy2Core.h>
 #include <Sprites.h>
 
 void handleMenu_MoveUp() {
@@ -66,7 +66,7 @@ void handleMenu() {
     drawEnemies(level);
     drawItems(level);
     drawPlayer();
-    drawChestCount(0, 0);
+    drawChestCount(106 - menu.x, 0);
     drawMenu();
 
 
