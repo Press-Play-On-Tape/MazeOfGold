@@ -1,13 +1,11 @@
 #include <Arduboy2Core.h>
 #include <Sprites.h>
+#include "BaseItem.h"
 
-class Enemy {
+class Enemy : public BaseItem {
 
     public:
 
-        uint8_t level;
-        int16_t x;
-        int16_t y;
         int8_t vx;
         int8_t vy;
         int16_t lastX;
@@ -16,14 +14,8 @@ class Enemy {
 
         void reset() {
 
-            this->x = 0;
-            this->y = 0;
-
-        }
-
-        bool isActive() {
-        
-            return this->x > 0 && this->y > 0;
+            BaseItem::reset();
+            this->dir = 0;
 
         }
         

@@ -33,5 +33,7 @@ enum class ItemType : uint8_t {
     Puff_Stairs,
     Death_Player,
     Death_Enemy,
+    Bullet_Normal,
+    Bullet_None,
 
 };

@@ -15,14 +15,16 @@ class Player {
         uint8_t dir;
         uint8_t inventoryCount;
 
-        ItemType inventory[10];
+        ItemType inventory[Constants::InventoryCount];
         bool dead = false;
+        bool holdingGun = false;
+        uint8_t bulletCount = 0;
 
         Player() { }
 
         bool addItem(ItemType item) {
         
-            if (this->inventoryCount == 10) return false;
+            if (this->inventoryCount == Constants::InventoryCount) return false;
 
             this->inventory[this->inventoryCount] = item;
             this->inventoryCount++;
@@ -32,7 +34,7 @@ class Player {
 
         bool removeItem(uint8_t idx) {
         
-            for (uint8_t i = idx + 1; i < 10; i++) {
+            for (uint8_t i = idx + 1; i < Constants::InventoryCount; i++) {
             
                 this->inventory[i - 1] = this->inventory[i];
 
@@ -43,6 +45,21 @@ class Player {
 
         }
 
+        uint8_t getItemIdx(ItemType itemType) {
+         
+            for (uint8_t i = 0; i < Constants::InventoryCount; i++) {
+            
+                if (this->inventory[i] == itemType) {
+
+                    return i;
+
+                }
+
+            }
+
+            return Constants::NoItem;
+
+        }
 
         void reset() {
 
@@ -55,13 +72,25 @@ class Player {
             this->inventoryCount = 0;
             this->addItem(ItemType::Map);
             this->dead = false;
+            this->bulletCount = 0;
+            this->holdingGun = false;
+
+            #ifdef DEBUG
+                this->addItem(ItemType::Gun);
+                this->addItem(ItemType::Bullets);
+                this->bulletCount = 2;
+            #endif
 
         }
 
         uint8_t getInventoryCount()                     { return this->inventoryCount; }
         ItemType &getInventoryItem(uint8_t idx)         { return this->inventory[idx]; }
         bool isDead()                                   { return this->dead; }
+        bool isHoldingGun()                             { return this->holdingGun; }
+        uint8_t getBulletCount()                        { return this->bulletCount; }
 
         void setDead(bool val)                          { this->dead = val; }
+        void setHoldingGun(bool val)                    { this->holdingGun = val; }
+        void setBulletCount(uint8_t val)                { this->bulletCount = val; }
 
 };

@@ -163,16 +163,32 @@ void checkCollisions(uint8_t level) {
         enemyRect.width = 10;
         enemyRect.height = 12;
 
-        if (arduboy.collide(enemyRect, playerRect)) { 
+        if (arduboy.collide(enemyRect, playerRect) && !player.isDead()) { 
 
             death.x = player.x;
             death.y = player.y;
             death.itemType = ItemType::Death_Player;
             death.data = 0;            
             player.setDead(true);
-            
+
         }
 
+        Point bulletPoint;
+        bulletPoint.x = bullet.x;
+        bulletPoint.y = bullet.y;
+
+        if (arduboy.collide(bulletPoint, enemyRect)) { 
+
+            death.x = enemy.x;
+            death.y = enemy.y;
+            death.itemType = ItemType::Death_Enemy;
+            death.data = 0;
+
+            enemy.x = 0;
+            enemy.y = 0;
+            bullet.reset();
+
+        }
     }
 
     for (int i = 0; i < Constants::MaxItems; i++) {
@@ -182,26 +198,39 @@ void checkCollisions(uint8_t level) {
 
         if (item.level != level || !item.isActive()) continue;
 
+        itemRect.x = item.x + 1;
+        itemRect.y = item.y;
+        itemRect.width = 10;
+        itemRect.height = 12;
+        
         switch (item.itemType) {
 
             case ItemType::Bomb:
-                {
-                    itemRect.x = item.x + 1;
-                    itemRect.y = item.y;
-                    itemRect.width = 10;
-                    itemRect.height = 12;
+            case ItemType::Bullets:
 
-                    if (arduboy.collide(itemRect, playerRect)) { 
+                if (arduboy.collide(itemRect, playerRect)) { 
 
-                        if (player.addItem(item.itemType)) {
+                    if (player.addItem(item.itemType)) {
 
-                            item.x = 0;
-                            item.y = 0;
+                        item.reset();
 
-                        }
-                        
                     }
+                    
+                }
 
+                break;
+
+            case ItemType::Gun:
+
+                if (arduboy.collide(itemRect, playerRect)) { 
+
+                    if (player.addItem(item.itemType)) {
+
+                        item.reset();
+                        player.setBulletCount(player.getBulletCount() + 2);
+
+                    }
+                    
                 }
 
                 break;
@@ -221,7 +250,7 @@ void checkCollisions(uint8_t level) {
         puffRect.width = 12;
         puffRect.height = 12;
 
-        if (arduboy.collide(puffRect, playerRect)) { 
+        if (arduboy.collide(puffRect, playerRect) && !player.isDead()) { 
 
             death.x = player.x;
             death.y = player.y;
@@ -270,70 +299,152 @@ void updatePlayer() {
 	uint8_t tileX = player.x / tileSize;
 	uint8_t tileY = player.y / tileSize;
 
-
     if (player.isDead()) return;
 
+    if (player.isHoldingGun()) {
 
-	if (player.vx == 0 && player.vy == 0 && player.x % tileSize == 0 && player.y % tileSize == 0) {
+        if (arduboy.justPressed(LEFT_BUTTON) && player.dir != 3) {
+            player.dir = 3;
+            return;
+        } 
+        else if (arduboy.justPressed(RIGHT_BUTTON) && player.dir != 1) {
+            player.dir = 1;
+            return;
+        } 
+        else if (arduboy.justPressed(UP_BUTTON) && player.dir != 0) {
+            player.dir = 0;
+            return;
+        } 
+        else if (arduboy.justPressed(DOWN_BUTTON) && player.dir != 2) {
+            player.dir = 2;
+            return;
+        }
 
-		if (arduboy.pressed(LEFT_BUTTON) && maze.isWalkable(level, tileX - 1, tileY)) {
-			player.vx = -2;
-			player.dir = 3;
-		} 
-		else if (arduboy.pressed(RIGHT_BUTTON) && maze.isWalkable(level, tileX + 1, tileY)) {
-			player.vx = 2;
-			player.dir = 1;
-		} 
-		else if (arduboy.pressed(UP_BUTTON) && maze.isWalkable(level, tileX, tileY - 1)) {
-			player.vy = -2;
-			player.dir = 0;
-		} 
-		else if (arduboy.pressed(DOWN_BUTTON) && maze.isWalkable(level, tileX, tileY + 1)) {
-			player.vy = 2;
-			player.dir = 2;
-		}
-		else if (arduboy.pressed(B_BUTTON)) {
+        if (arduboy.justPressed(A_BUTTON) && !bullet.isActive()) {
+        
+            if (player.getBulletCount() > 0) {
+                
+                player.setBulletCount(player.getBulletCount() - 1);
+                bullet.itemType = ItemType::Bullet_Normal;
 
-			menu.direction = MenuDirection::Openning;
-			menu.x = 128;
-			gameState = GameState::ShowMenu;
+                switch (player.dir) {
+                
+                    case 0:
+                        bullet.x = player.x + 5;
+                        bullet.y = player.y + 4;
+                        bullet.data = player.dir;
+                        break;
+                
+                    case 1:
+                        bullet.x = player.x + 12;
+                        bullet.y = player.y + 7;
+                        bullet.data = player.dir;
+                        break;
+                
+                    case 2:
+                        bullet.x = player.x + 5;
+                        bullet.y = player.y + 7;
+                        bullet.data = player.dir;
+                        break;
+                
+                    case 3:
+                        bullet.x = player.x - 2;
+                        bullet.y = player.y + 7;
+                        bullet.data = player.dir;
+                        break;
+                        
+                }
+                
+            }
+            else {
 
-		}
-		
-	}
+                bullet.itemType = ItemType::Bullet_None;
+                bullet.x = player.x - 2;
+                bullet.y = player.y + 4;
+                bullet.data = 6;
 
-	player.x += player.vx;
-	player.y += player.vy;
+            }
 
-	// Stop when aligned with grid ..
 
-	bool stop = false;
+        }
 
-	if (player.vx != 0 && player.x % tileSize == 0) { 
-		player.vx = 0;
-		stop = true;
-	}
+    }
 
-	if (player.vy != 0 && player.y % tileSize == 0) {
-		player.vy = 0;
-		stop = true;
-	}
+    if (player.vx == 0 && player.vy == 0 && player.x % tileSize == 0 && player.y % tileSize == 0) {
 
-	if (stop) {
+        if (arduboy.pressed(LEFT_BUTTON) && maze.isWalkable(level, tileX - 1, tileY)) {
+            player.vx = -2;
+            player.dir = 3;
+        } 
+        else if (arduboy.pressed(RIGHT_BUTTON) && maze.isWalkable(level, tileX + 1, tileY)) {
+            player.vx = 2;
+            player.dir = 1;
+        } 
+        else if (arduboy.pressed(UP_BUTTON) && maze.isWalkable(level, tileX, tileY - 1)) {
+            player.vy = -2;
+            player.dir = 0;
+        } 
+        else if (arduboy.pressed(DOWN_BUTTON) && maze.isWalkable(level, tileX, tileY + 1)) {
+            player.vy = 2;
+            player.dir = 2;
+        }
+        else if (arduboy.pressed(B_BUTTON)) {
 
-		tileX = player.x / tileSize;
-		tileY = player.y / tileSize;
+            menu.direction = MenuDirection::Openning;
+            menu.x = 128;
+            gameState = GameState::ShowMenu;
 
-		if (maze.getCell(level, tileX, tileY) == 2) {
+        }
+        else if (arduboy.pressed(A_BUTTON) && arduboy.frameCount > 32) {
+
+            if (player.getItemIdx(ItemType::Gun) != Constants::NoItem) {
+            
+                player.setHoldingGun(true);
+
+            }
+
+        }
+
+        if (player.vx != 0 || player.vy != 0) {
+
+            player.setHoldingGun(false);
+
+        }
+
+    }
+
+    player.x += player.vx;
+    player.y += player.vy;
+
+    // Stop when aligned with grid ..
+
+    bool stop = false;
+
+    if (player.vx != 0 && player.x % tileSize == 0) { 
+        player.vx = 0;
+        stop = true;
+    }
+
+    if (player.vy != 0 && player.y % tileSize == 0) {
+        player.vy = 0;
+        stop = true;
+    }
+
+    if (stop) {
+
+        tileX = player.x / tileSize;
+        tileY = player.y / tileSize;
+
+        if (maze.getCell(level, tileX, tileY) == 2) {
 
             puff.x = player.x;
             puff.y = player.y;
             puff.data = 2 * 6;
             puff.itemType = ItemType::Puff_Stairs;
-			level = !level;
-		}
+            level = !level;
+        }
 
-	}
+    }
 
 }
 

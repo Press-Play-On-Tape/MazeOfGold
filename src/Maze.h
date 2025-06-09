@@ -2,6 +2,7 @@
 
 #include "Constants.h"
 #include "Enemy.h"
+#include "Player.h"
 #include "Item.h"
 
 class Maze {
@@ -26,6 +27,28 @@ class Maze {
             stackSize -= 2;
             x = stack[stackSize];
             y = stack[stackSize + 1];
+        }
+
+
+        bool isChestLocatedHere(uint8_t level, uint8_t iLow, uint8_t iHigh, uint8_t x, uint8_t y) {
+
+            if (iHigh == 255)       return false;
+            if ( x < 0 || y < 0)    return false;
+
+            for (uint8_t i = iLow; i <= iHigh; i++) {
+
+                Item &chest = this->chests[i];
+
+                if (chest.level == level && chest.x == x && chest.y == y) {
+                Serial.println("ese");
+                    return true;
+
+                }
+
+            }
+
+            return false;
+
         }
 
     public:
@@ -223,18 +246,32 @@ class Maze {
 
         void spawnChests(uint8_t level, uint8_t iLow, uint8_t iHigh) {
 
-            for (int i = iLow; i <= iHigh; i++) {
+            for (uint8_t i = iLow; i <= iHigh; i++) {
 
                 int x, y;
                 
                 do {
 
-                    x = random(Constants::MazeWidth);
-                    y = random(Constants::MazeHeight);
+                    x = random(1, Constants::MazeWidth - 1);
+                    y = random(1, Constants::MazeHeight - 1);
 
-                } while (this->getCell(level, x, y) != 0);
+                } while (this->getCell(level, x, y) != 0
+                         || this->getCell(level, x - 1, y) == 2
+                         || this->getCell(level, x + 1, y) == 2
+                         || this->getCell(level, x, y - 1) == 2
+                         || this->getCell(level, x, y - 2) == 2
+                         || this->isChestLocatedHere(level, iLow, i - 1, x, y)
+                         || this->isChestLocatedHere(level, iLow, i - 1, x - 1, y)
+                         || this->isChestLocatedHere(level, iLow, i - 1, x + 1, y)
+                         || this->isChestLocatedHere(level, iLow, i - 1, x, y - 1)
+                         || this->isChestLocatedHere(level, iLow, i - 1, x, y + 1)
+                );
 
-                chests[i] = {level, x, y, ItemType::None};
+                chests[i].level = level;
+                chests[i].x = x;
+                chests[i].y = y;
+                chests[i].itemType = ItemType::None;
+            
             }
 
             activeChests = Constants::MaxChests;
@@ -280,7 +317,7 @@ class Maze {
 
         }
 
-        void spawnItems(uint8_t level, uint8_t iLow, uint8_t iHigh) {
+        void spawnItems(Player &player, uint8_t level, uint8_t iLow, uint8_t iHigh) {
 
             for (uint8_t i = iLow; i < iHigh; i++) {
 
@@ -293,11 +330,45 @@ class Maze {
 
                 } while (this->getCell(level, x, y) != 0);
 
+
+                ItemType rnd = ItemType::None;
+
+
+                bool hasBomb = player.getItemIdx(ItemType::Bomb) != Constants::NoItem;
+                bool hasGun = player.getItemIdx(ItemType::Gun) != Constants::NoItem;
+
+                uint8_t maxRnd = (hasBomb && hasGun ? 6 : 3);
+                
+                if (random(0, maxRnd) == 0) {
+
+                    if (!hasGun && hasBomb) {
+
+                        rnd = random(0, 2) == 0 ? ItemType::Gun : ItemType::Bullets;
+
+                    }
+                    else if (hasGun && !hasBomb) {
+
+                        rnd = random(0, 2) == 0 ? ItemType::Bomb : ItemType::Bullets;
+
+                    }
+                    else if (hasGun && hasBomb) {
+
+                        rnd = random(0, 2) == 0 ? ItemType::Bomb : ItemType::Bullets;
+
+                    }
+                    else {
+
+                        rnd = random(0, 2) == 0 ? ItemType::Gun : ItemType::Bomb;
+                    
+                    }
+
+                }
+
                 Item &item = this->items[i];
                 item.level = level;
                 item.x = x * tileSize;
                 item.y = y * tileSize;
-                item.itemType = ItemType::Bomb;
+                item.itemType = rnd;
             
             }
 

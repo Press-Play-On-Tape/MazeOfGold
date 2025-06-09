@@ -6,9 +6,9 @@ const uint8_t NUM_COINS       = 10;
 
 void resetCoin(uint8_t i) {
 
-    maze.getItem(i).x = random(0, WIDTH - 8);
-    maze.getItem(i).y = random(-64, 0);                     // start above the screen
-    maze.getItem(i).data = random(1, 3);
+    maze.getEnemy(i).x = random(0, WIDTH - 8);
+    maze.getEnemy(i).y = random(-64, 0);                     // start above the screen
+    maze.getEnemy(i).data = random(1, 3);
 
 }
 
@@ -24,11 +24,11 @@ void updateAndDrawCoins() {
 
     for (uint8_t i = 0; i < NUM_COINS; ++i) {
 
-        maze.getItem(i).y += maze.getItem(i).data; 
+        maze.getEnemy(i).y += maze.getEnemy(i).data; 
 
-        if (maze.getItem(i).y > 64) resetCoin(i);  
+        if (maze.getEnemy(i).y > 64) resetCoin(i);  
 
-        Sprites::drawSelfMasked(maze.getItem(i).x, maze.getItem(i).y, Images::Coin, (arduboy.frameCount + i) % 8);
+        Sprites::drawSelfMasked(maze.getEnemy(i).x, maze.getEnemy(i).y, Images::Coin, (arduboy.frameCount + i) % 8);
     }
 
 }

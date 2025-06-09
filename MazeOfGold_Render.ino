@@ -350,8 +350,40 @@ void drawPlayer() {
 
     if (!player.isDead()) {
 
-        uint8_t idx = player.dir * 2 + (((player.x + player.y) % 8) < 4);
-        Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player, Images::Player_Mask, idx, idx);
+        if (player.isHoldingGun()) {
+
+            switch (player.dir) {
+            
+                case 0:
+                    Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player_Gun_00, Images::Player_Gun_00_Mask, 0, 0);
+                    break;
+            
+                case 1:
+                    Sprites::drawExternalMask(player.x - camera.x - 2, player.y - camera.y, Images::Player_Gun_01, Images::Player_Gun_01_Mask, 0, 0);
+                    break;
+            
+                case 2:
+                    Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player_Gun_02, Images::Player_Gun_02_Mask, 0, 0);
+                    break;
+            
+                case 3:
+                    Sprites::drawExternalMask(player.x - camera.x - 1, player.y - camera.y, Images::Player_Gun_03, Images::Player_Gun_03_Mask, 0, 0);
+                    break;
+
+            }
+
+            if (menu.direction == MenuDirection::None) {
+                Sprites::drawErase(0, 0, Images::MenuItema_Gun_Mask, 0);
+                Sprites::drawSelfMasked(1, 0, Images::MenuItems_Gun, player.getBulletCount());
+            }
+
+        }
+        else {
+
+            uint8_t idx = player.dir * 2 + (((player.x + player.y) % 8) < 4);
+            Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player, Images::Player_Mask, idx, idx);
+
+        }
 
     }
 
@@ -535,6 +567,14 @@ void drawItems(uint8_t level) {
 
             switch (item.itemType) {
             
+                case ItemType::Gun:
+                    Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::Gun, 0);
+                    break;
+            
+                case ItemType::Bullets:
+                    Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::Bullets, 0);
+                    break;
+            
                 case ItemType::Bomb:
                     Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::Bomb, 8);
                     break;
@@ -604,10 +644,23 @@ void drawMenu() {
     uint8_t y = 10;
 
     for (uint8_t i = menu.top; i < menu.top + 3; i++) {
+        
         if (i < player.getInventoryCount()) {
-            Sprites::drawSelfMasked(menu.x + 6, y, Images::MenuItems, static_cast<uint8_t>(player.getInventoryItem(i)));
+
+            if (player.getInventoryItem(i) != ItemType::Gun) {
+
+                Sprites::drawSelfMasked(menu.x + 6, y, Images::MenuItems, static_cast<uint8_t>(player.getInventoryItem(i)));
+
+            }
+            else {
+
+                Sprites::drawSelfMasked(menu.x + 6, y, Images::MenuItems_Gun, player.getBulletCount());
+
+            }
+
         }
         y = y + 16;
+
     }
 
     if (arduboy.frameCount % 24 < 12) {
@@ -625,6 +678,12 @@ void drawMenu() {
     
         menu.x = menu.x - 2;
 
+        if (menu.x == 128 - 22) {
+        
+            menu.direction = MenuDirection::None;
+
+        }
+
     }
 
     if (menu.direction == MenuDirection::Closing) {
@@ -633,11 +692,81 @@ void drawMenu() {
     
             menu.x = menu.x + 2;
 
-        }
-        else {
-        
-            gameState = GameState::GamePlay;
+            if (menu.x == 128) {
+            
+                menu.direction = MenuDirection::None;
+                gameState = GameState::GamePlay;
+                    
+            }
 
+        }
+
+    }
+
+}
+
+
+void drawBullet() {
+
+    if (bullet.isActive()) {
+    
+        if (bullet.itemType == ItemType::Bullet_Normal) {
+
+            arduboy.drawPixel(bullet.x - camera.x, bullet.y - camera.y, WHITE);
+
+            switch (bullet.data) {
+            
+                case 0:
+                    bullet.y = bullet.y - 4;
+                    break;
+            
+                case 1:
+                    bullet.x = bullet.x + 4;
+                    break;
+            
+                case 2:
+                    bullet.y = bullet.y + 4;
+                    break;
+            
+                case 3:
+                    bullet.x = bullet.x - 4;
+                    break;
+                    
+            }
+
+            if (!maze.isWalkable(level, bullet.x  / tileSize, bullet.y / tileSize)) {
+
+                bullet.reset();
+                
+            }
+
+            if (player.getBulletCount() == 0) {
+            
+                uint8_t bulletIdx = player.getItemIdx(ItemType::Bullets);
+
+                if (bulletIdx != Constants::NoItem) {
+
+                    player.removeItem(bulletIdx);
+                    player.setBulletCount(2);
+
+                }
+
+            }
+
+        }
+        else if (bullet.itemType == ItemType::Bullet_None) {
+
+            Sprites::drawExternalMask(bullet.x - camera.x, bullet.y - camera.y, Images::Click, Images::Click_Mask, 0, 0);
+
+            bullet.data = bullet.data - 1;
+
+            if (bullet.data == 0) {
+
+                bullet.reset();
+                player.setHoldingGun(false);
+
+            }
+        
         }
 
     }

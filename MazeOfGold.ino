@@ -23,6 +23,7 @@ Menu menu;
 Player player;
 Item puff;
 Item death;
+Item bullet;
 
 GameState gameState = GameState::Menu_Init;
 // GameState gameState_Next = GameState::Menu_Init;
@@ -106,6 +107,7 @@ void loop() {
 			drawPlayer();
 			drawDeath();
 			drawPuff();
+			drawBullet();
 
 			if (displayChests > 0) {
 
@@ -154,7 +156,7 @@ void loop() {
 
 			if (arduboy.justPressed(A_BUTTON)) {
 
-				if (maze.getEnemyCount() < Constants::MaxEnemys) maze.setEnemyCount(maze.getEnemyCount() + 1);
+				if (maze.getEnemyCount() < Constants::MaxEnemys / 2) maze.setEnemyCount(maze.getEnemyCount() + 1);
 
 				gameState = GameState::GamePlay;
 				clearedLevel++;
@@ -166,21 +168,6 @@ void loop() {
 	}
 
 	arduboy.display();
-
-
-	// Do we have a pending gamestate transition?
-
-	// if (gameState_Transition > 0) {
-	
-	// 	gameState_Transition--;
-
-	// 	if (gameState_Transition == 0) {
-
-	// 		gameState = gameState_Next;
-
-	// 	}
-
-	// }
 
 }
 
@@ -205,8 +192,8 @@ void startGame() {
 	maze.spawnEnemys(0, 0, maze.getEnemyCount());
 	maze.spawnEnemys(1, 6, 6 + maze.getEnemyCount());
 
-	maze.spawnItems(0, 0, 1);
-	maze.spawnItems(1, 1, 2);
+	maze.spawnItems(player, 0, 0, 1);
+	maze.spawnItems(player, 1, 1, 2);
 
 	player.reset();
 
@@ -217,5 +204,6 @@ void startGame() {
 	menu.y = 0;
 	menu.top = 0;
 	displayChests = 0;
+	arduboy.frameCount == 0;
 
 }

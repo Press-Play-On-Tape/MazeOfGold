@@ -17,6 +17,7 @@ namespace Constants {
 	static constexpr uint8_t MaxEnemys = 12;
 	static constexpr uint8_t MaxItems = 5; // Keep odd so there is a spare one at all times.
 	static constexpr uint8_t NoItem = 255;
+	static constexpr uint8_t InventoryCount = 10;
 
 	//                                           0  1  2  3  4  5  6  7  8  9  0  1  2
 	static constexpr uint8_t BombX[] PROGMEM = { 7, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0 };

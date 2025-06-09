@@ -64,6 +64,7 @@ void handleMenu() {
     drawEnemies(level);
     drawItems(level);
     drawPlayer();
+    drawDeath();
     drawChestCount(106 - menu.x, 0);
     drawMenu();
 
@@ -80,7 +81,7 @@ void handleMenu() {
 
     }
 
-    if (arduboy.justPressed(A_BUTTON)) {
+    if (arduboy.justPressed(A_BUTTON) && menu.x == 128 - 22) {
 
         switch (player.getInventoryItem(menu.y)) {
         
@@ -123,12 +124,21 @@ void handleMenu() {
 
                 break;
 
+            case ItemType::Gun:
+                
+                player.setHoldingGun(true);
+                menu.direction = MenuDirection::Closing;
+                handleMenu_MoveUp();
+                break;
+
         }
 
     }
 
     if (arduboy.justPressed(B_BUTTON)) {
+
         menu.direction = MenuDirection::Closing;
+        
     }
     
 }
