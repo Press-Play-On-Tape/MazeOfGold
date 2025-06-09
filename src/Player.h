@@ -16,6 +16,7 @@ class Player {
         uint8_t inventoryCount;
 
         ItemType inventory[10];
+        bool dead = false;
 
         Player() { }
 
@@ -53,10 +54,15 @@ class Player {
 
             this->inventoryCount = 0;
             this->addItem(ItemType::Map);
+            this->addItem(ItemType::Bomb);
+            this->dead = false;
 
         }
 
         uint8_t getInventoryCount()                     { return this->inventoryCount; }
         ItemType &getInventoryItem(uint8_t idx)         { return this->inventory[idx]; }
+        bool isDead()                                   { return this->dead; }
+
+        void setDead(bool val)                          { this->dead = val; }
 
 };

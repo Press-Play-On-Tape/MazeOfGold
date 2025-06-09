@@ -16,12 +16,13 @@ class Item {
 
             this->x = 0;
             this->y = 0;
+            this->itemType = ItemType::None;
 
         }
 
         bool isActive() {
         
-            return this->x > 0 && this->y > 0;
+            return this->itemType != ItemType::None || this->x > 0 && this->y > 0;
 
         }
 };

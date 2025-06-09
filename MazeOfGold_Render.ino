@@ -186,9 +186,9 @@ void drawMaze_Small(uint8_t levelToRender) {
     int startTileX = 0;
     int startTileY = 0;
 
-    for (int y = 0; y <= 23; y++) {
+    for (uint8_t y = 0; y <= 23; y++) {
 
-        for (int x = 0; x <= 23; x++) {
+        for (uint8_t x = 0; x <= 23; x++) {
 
             int mazeX = startTileX + x;
             int mazeY = startTileY + y;
@@ -348,9 +348,12 @@ void drawChests_Small(uint8_t levelToRender) {
 
 void drawPlayer() {
 
-    uint8_t idx = player.dir * 2 + (((player.x + player.y) % 8) < 4);
+    if (!player.isDead()) {
 
-    Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player, Images::Player_Mask, idx, idx);
+        uint8_t idx = player.dir * 2 + (((player.x + player.y) % 8) < 4);
+        Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player, Images::Player_Mask, idx, idx);
+
+    }
 
 }
 
@@ -376,6 +379,34 @@ void drawPuff() {
         if (puff.data < 0) {
             puff.x= 0;
             puff.y = 0;
+            puff.itemType = ItemType::None;
+        }
+    
+    }
+
+}
+
+
+void drawDeath() {
+
+    if (death.isActive()) {
+
+        uint8_t idx = death.data < 6 ? 0 : (death.data - 6) / 2;
+
+        Sprites::drawExternalMask(death.x - camera.x, death.y - camera.y, Images::Gravestone, Images::Gravestone_Mask, idx, idx);
+
+        death.data++;
+        
+        if (death.data == 30) {
+            death.x= 0;
+            death.y = 0;
+
+            if (death.itemType == ItemType::Death_Player) {
+                gameState = GameState::GameOver;
+            }
+
+            death.itemType = ItemType::None;
+
         }
     
     }
@@ -510,14 +541,14 @@ void drawItems(uint8_t level) {
             
                 case ItemType::Bomb_Active:
                     {
-                        uint8_t idx = item.data / 9;
+                        uint8_t idx = item.data / 6;
                         if (idx > 8) idx = 8;
 
                         Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::Bomb, idx);
 
                         if (arduboy.frameCount % 5 < 2) { 
 
-                            uint8_t i = item.data / 9;
+                            uint8_t i = item.data / 6;
                             uint8_t xOffset = pgm_read_byte(Constants::BombX + i);
                             uint8_t yOffset = pgm_read_byte(Constants::BombY + i);
                             Sprites::drawSelfMasked(item.x - camera.x + 7 - xOffset, item.y - camera.y - 3 + yOffset, Images::Bomb_Flame, ((item.data / 3) % 4));
@@ -531,6 +562,7 @@ void drawItems(uint8_t level) {
                             puff.x = item.x - 3;
                             puff.y = item.y - 1;
                             puff.data = 6 * 2;
+                            puff.itemType = ItemType::Puff_Bomb;
                             
                         }
                         else if (item.data == 0) {

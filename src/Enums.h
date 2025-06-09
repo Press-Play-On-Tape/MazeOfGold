@@ -10,6 +10,7 @@ enum class MenuDirection : uint8_t {
 };
 
 enum class GameState : uint8_t {
+    Menu_Init,
     Menu,
     Menu_Select,
     GamePlay,
@@ -26,6 +27,11 @@ enum class ItemType : uint8_t {
     Gun,
     Bullets,
     Wine,
+    //-------------------------
     Bomb_Active,
+    Puff_Bomb,
+    Puff_Stairs,
+    Death_Player,
+    Death_Enemy,
 
 };

@@ -169,7 +169,6 @@ void checkCollisions(uint8_t level) {
 
     }
 
-
     for (int i = 0; i < Constants::MaxItems; i++) {
 
         Item &item = maze.getItem(i);
@@ -205,6 +204,58 @@ void checkCollisions(uint8_t level) {
 
     }
 
+
+    // Puff .. caused by bomb.
+
+    if (puff.isActive() && puff.itemType == ItemType::Puff_Bomb) {
+
+        Rect puffRect;
+        puffRect.x = puff.x + 1;
+        puffRect.y = puff.y;
+        puffRect.width = 12;
+        puffRect.height = 12;
+
+        if (arduboy.collide(puffRect, playerRect)) { 
+
+            death.x = player.x;
+            death.y = player.y;
+            death.itemType = ItemType::Death_Player;
+            death.data = 0;            
+            player.setDead(true);
+
+        }
+        else {
+            
+            for (int i = 0; i < Constants::MaxEnemys; i++) {
+
+                Enemy &enemy = maze.getEnemy(i);
+                Rect enemyRect;
+
+                if (enemy.level != level || !enemy.isActive()) continue;
+
+                enemyRect.x = enemy.x + 1;
+                enemyRect.y = enemy.y;
+                enemyRect.width = 10;
+                enemyRect.height = 12;
+
+                if (arduboy.collide(enemyRect, puffRect)) { 
+
+                    death.x = enemy.x;
+                    death.y = enemy.y;
+                    death.itemType = ItemType::Death_Enemy;
+                    death.data = 0;
+
+                    enemy.x = 0;
+                    enemy.y = 0;
+
+                }
+
+            }
+
+        }
+
+    }
+
 }
 
 
@@ -212,6 +263,10 @@ void updatePlayer() {
 
 	uint8_t tileX = player.x / tileSize;
 	uint8_t tileY = player.y / tileSize;
+
+
+    if (player.isDead()) return;
+
 
 	if (player.vx == 0 && player.vy == 0 && player.x % tileSize == 0 && player.y % tileSize == 0) {
 
@@ -268,6 +323,7 @@ void updatePlayer() {
             puff.x = player.x;
             puff.y = player.y;
             puff.data = 2 * 6;
+            puff.itemType = ItemType::Puff_Stairs;
 			level = !level;
 		}
 

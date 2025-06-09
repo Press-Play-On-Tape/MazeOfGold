@@ -22,8 +22,11 @@ Maze maze;
 Menu menu;
 Player player;
 Item puff;
+Item death;
 
-GameState gameState = GameState::Menu;
+GameState gameState = GameState::Menu_Init;
+// GameState gameState_Next = GameState::Menu_Init;
+// uint8_t gameState_Transition;
 
 uint8_t level = 0;
 uint8_t mapLevel = 0;
@@ -35,7 +38,7 @@ void setup() {
 	arduboy.boot();
 	arduboy.setFrameRate(25);
 	randomSeed(arduboy.generateRandomSeed());
-
+	
 }
 
 void loop() {
@@ -47,19 +50,17 @@ void loop() {
 
 	switch (gameState) {
 	
+		case GameState::Menu_Init:
+
+			initCoins();
+			gameState = GameState::Menu;
+			[[fallthrough]]
+	
 		case GameState::Menu:
 
-			arduboy.drawFastHLine(0, 23, 128, WHITE);
-			Sprites::drawOverwrite(0, 25, Images::Title, 0);
-			arduboy.drawFastHLine(0, 40, 128, WHITE);
-
-			if (arduboy.justPressed(A_BUTTON)) {
-
-				gameState = GameState::Menu_Select;
-
-			}	
+			handleTitle();
 			break;
-	
+
 		case GameState::Menu_Select:
 
 			arduboy.drawFastHLine(0, 23, 128, WHITE);
@@ -103,6 +104,7 @@ void loop() {
 			drawEnemies(level);
 			drawItems(level);
 			drawPlayer();
+			drawDeath();
 			drawPuff();
 
 			if (displayChests > 0) {
@@ -130,12 +132,13 @@ void loop() {
 			drawChests(level);
 			drawEnemies(level);
 			drawPlayer();
+			drawDeath();
 			drawPuff();
 
 			Sprites::drawOverwrite(0, 26, Images::GameOver, 0);
 
 			if (arduboy.justPressed(A_BUTTON)) {
-				gameState = GameState::Menu;
+				gameState = GameState::Menu_Init;
 			}
 			break;
 
@@ -144,6 +147,7 @@ void loop() {
 			drawChests(level);
 			drawEnemies(level);
 			drawPlayer();
+			drawDeath();
 			drawPuff();
 
 			Sprites::drawOverwrite(0, 26, Images::LevelUp, 0);
@@ -162,6 +166,21 @@ void loop() {
 	}
 
 	arduboy.display();
+
+
+	// Do we have a pending gamestate transition?
+
+	// if (gameState_Transition > 0) {
+	
+	// 	gameState_Transition--;
+
+	// 	if (gameState_Transition == 0) {
+
+	// 		gameState = gameState_Next;
+
+	// 	}
+
+	// }
 
 }
 
@@ -197,5 +216,6 @@ void startGame() {
 
 	menu.y = 0;
 	menu.top = 0;
+	displayChests = 0;
 
 }

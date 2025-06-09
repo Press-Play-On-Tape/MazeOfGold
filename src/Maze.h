@@ -43,7 +43,6 @@ class Maze {
         void setEnemyCount(uint8_t val)             { this->enemyCount = val; }
         void setActiveChests(uint8_t val)           { this->activeChests = val; }
 
-
         void setCell(uint8_t level, uint8_t x, uint8_t y, uint8_t value) {
         
             int byteIndex = (x + (level == 1 ? Constants::MazeWidth : 0)) / 2;
@@ -63,7 +62,7 @@ class Maze {
                 return 1; // Out of bounds, return wall
             }
 
-            int byteIndex = (x + (level == 1 ? Constants::MazeWidth : 0)) / 2;
+            uint8_t byteIndex = (x + (level == 1 ? Constants::MazeWidth : 0)) / 2;
 
             if (x % 2 == 0) {
                 return (maze[y][byteIndex] >> 4) & 0x0F;
@@ -80,7 +79,7 @@ class Maze {
                 return true; // Out of bounds, return wall
             }
 
-            int byteIndex = (x + (level == 1 ? Constants::MazeWidth : 0)) / 2;
+            uint8_t byteIndex = (x + (level == 1 ? Constants::MazeWidth : 0)) / 2;
 
             if (x % 2 == 0) {
                 return ((maze[y][byteIndex] >> 4) & 0x0F) == 1;
@@ -262,8 +261,8 @@ class Maze {
 
                 do {
                 
-                    x = random(5, Constants::MazeWidth);
-                    y = random(5, Constants::MazeHeight);
+                    x = random(4, Constants::MazeWidth);
+                    y = random(4, Constants::MazeHeight);
 
                 } while (this->getCell(level, x, y) != 0);
 
@@ -301,6 +300,18 @@ class Maze {
                 item.itemType = ItemType::Bomb;
             
             }
+
+        }
+
+        uint8_t getEmptyItem() {
+
+            for (uint8_t i = 0; i < Constants::MaxItems; i++) {
+
+                if (!this->items[i].isActive()) return i;
+
+            }
+
+            return Constants::NoItem;
 
         }
 };

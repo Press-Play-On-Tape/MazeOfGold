@@ -51,8 +51,6 @@ void handleMenu_MoveDown() {
 
 void handleMenu() {
 
-
-    // updatePlayer();
     updateCamera();
 
     if (arduboy.frameCount % 2 == 0) {  // enemies move slower
@@ -87,21 +85,41 @@ void handleMenu() {
         switch (player.getInventoryItem(menu.y)) {
         
             case ItemType::Map:
+                
+                switch (player.y) {
+                
+                    case 0 ... 63:
+                        camera_Small.y = 0;
+                        break;
+
+                    case 64 ... 126:
+                        camera_Small.y = (player.y - 63) / 5;
+                        break;
+
+                    default:
+                        camera_Small.y = 26;
+                        break;
+
+                }
+                
                 mapLevel = level;
                 gameState = GameState::Map;
                 break;
         
             case ItemType::Bomb:
-                
-                Item &item = maze.getItem(2);
-                item.x = player.x;
-                item.y = player.y;
-                item.itemType = ItemType::Bomb_Active;
-                item.data = (13 * 9) - 1;
-                player.removeItem(menu.y);
-                menu.direction = MenuDirection::Closing;
+                {
+                    uint8_t idx = maze.getEmptyItem();
+                    Item &item = maze.getItem(idx);
+                    item.level = level;
+                    item.x = player.x;
+                    item.y = player.y;
+                    item.itemType = ItemType::Bomb_Active;
+                    item.data = (13 * 6) - 1;
+                    player.removeItem(menu.y);
+                    menu.direction = MenuDirection::Closing;
 
-                handleMenu_MoveUp();
+                    handleMenu_MoveUp();
+                }
 
                 break;
 

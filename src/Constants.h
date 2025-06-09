@@ -4,8 +4,8 @@
 const uint8_t DELAY = 12;
 
 const int tileSize = 12;
-const int screenTileWidth = (128 / tileSize) + 1;  // 16 tiles wide
-const int screenTileHeight = (64 / tileSize) + 1;  // 8 tiles tall
+const int screenTileWidth = (128 / tileSize) + 1;
+const int screenTileHeight = (64 / tileSize) + 1;
 
 namespace Constants { 
 
@@ -15,9 +15,10 @@ namespace Constants {
 	static constexpr uint8_t MazeWidth = 23;
 	static constexpr uint8_t MaxChests = 10;
 	static constexpr uint8_t MaxEnemys = 12;
-	static constexpr uint8_t MaxItems = 4;
+	static constexpr uint8_t MaxItems = 5; // Keep odd so there is a spare one at all times.
+	static constexpr uint8_t NoItem = 255;
 
-	//                        0  1  2  3  4  5  6  7  8  9  0  1  2
+	//                                           0  1  2  3  4  5  6  7  8  9  0  1  2
 	static constexpr uint8_t BombX[] PROGMEM = { 7, 6, 5, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0 };
 	static constexpr uint8_t BombY[] PROGMEM = { 1, 0, 0, 0, 1, 2, 2, 2, 1, 1, 1, 1, 1 };
 
