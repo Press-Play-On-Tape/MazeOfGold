@@ -54,7 +54,6 @@ class Player {
 
             this->inventoryCount = 0;
             this->addItem(ItemType::Map);
-            this->addItem(ItemType::Bomb);
             this->dead = false;
 
         }

@@ -164,7 +164,13 @@ void checkCollisions(uint8_t level) {
         enemyRect.height = 12;
 
         if (arduboy.collide(enemyRect, playerRect)) { 
-            gameState = GameState::GameOver;
+
+            death.x = player.x;
+            death.y = player.y;
+            death.itemType = ItemType::Death_Player;
+            death.data = 0;            
+            player.setDead(true);
+            
         }
 
     }
