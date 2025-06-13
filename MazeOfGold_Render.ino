@@ -3,6 +3,7 @@
 
 void drawChestCount(int8_t x, uint8_t y) {
 
+    arduboy.fillRect(x - 1, y - 1, 17, 14, BLACK);
     Sprites::drawExternalMask(x, y, Images::Score, Images::Score_Mask, maze.getActiveChests() - 1, 0);
     
 }
@@ -10,176 +11,158 @@ void drawChestCount(int8_t x, uint8_t y) {
 
 void drawMaze(uint8_t level) {
 
-    int startTileX = camera.x / tileSize;
-    int startTileY = camera.y / tileSize;
+    uint8_t startTileX = camera.x / tileSize;
+    uint8_t startTileY = camera.y / tileSize;
 
-    for (int y = 0; y <= screenTileHeight; y++) {
+    for (uint8_t y = 0; y <= screenTileHeight; y++) {
 
-        for (int x = 0; x <= screenTileWidth; x++) {
+        for (uint8_t x = 0; x <= screenTileWidth; x++) {
 
-            int mazeX = startTileX + x;
-            int mazeY = startTileY + y;
+            uint8_t mazeX = startTileX + x;
+            uint8_t mazeY = startTileY + y;
+            uint8_t idx = 255;
 
             if (mazeX >= 0 && mazeX < Constants::MazeWidth && mazeY >= 0 && mazeY < Constants::MazeHeight) {
 
                 if (mazeX == 0 && mazeY == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 12);
+                    idx = 12;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1 && mazeY == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 13);
+                    idx = 13;
                 } 
                 else if (mazeX == 0 && mazeY == Constants::MazeHeight - 1) {  // Bottom left
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 14);
+                    idx = 14;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1 && mazeY == Constants::MazeHeight - 1) {  // Bottom right
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 15);
+                    idx = 15;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1 && maze.isWall(level, mazeX - 1, mazeY)) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 18);
+                    idx = 18;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 10);
+                    idx = 10;
                 }
                 else if (maze.isWall(level, mazeX, mazeY - 1) && mazeY == Constants::MazeHeight - 1) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 19);
+                    idx = 19;
                 } 
                 else if (mazeY == Constants::MazeHeight - 1) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 11);
+                    idx = 11;
                 }
                 else if (mazeY == 0 && maze.isWall(level, mazeX, mazeY + 1)) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 17);
+                    idx = 17;
                 } 
                 else if (mazeY == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 9);
+                    idx = 9;
                 } 
                 else if (mazeX == 0 && maze.isWall(level, mazeX + 1, mazeY)) { 
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 16);
+                    idx = 16;
                 } 
                 else if (mazeX == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 8);
+                    idx = 8;
                 } 
                 else if (maze.isWall(level, mazeX, mazeY)) {
 
                     if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 5);
+                        idx = 5;
                     } 
                     else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 20);
+                        idx = 20;
                     } 
                     else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 21);
+                        idx = 21;
                     } 
                     else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 2);
+                        idx = 2;
                     } 
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 4);
+                        idx = 4;
                     } 
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {  // Updwards
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 6);
+                        idx = 6;
                     } 
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 22);
+                        idx = 22;
                     } 
                     else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 23);
+                        idx = 23;
                     } 
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 3);
+                        idx = 3;
                     } 
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 1);
+                        idx = 1;
                     } 
                     else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {  // 4 corners
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 7);
+                        idx = 7;
                     } 
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {  // corners
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 24);
+                        idx = 24;
                     } 
                     else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 25);
+                        idx = 25;
                     } 
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 26);
+                        idx = 26;
                     } 
                     else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 27);
+                        idx = 27;
                     } 
                     else if (maze.isWall(level, mazeX, mazeY)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 0);
+                        idx = 0;
                     }
+
                 }
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
                     if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 28);
-
+                        idx = 28;
                     }
                     else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 29);
-
+                        idx = 29;
                     }
                     else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 30);
-
+                        idx = 30;
                     }
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 31);
-
+                        idx = 31;
                     }
                     // ||
                     else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 33);
-
+                        idx = 33;
                     }
                     // |^
                     else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 34);
-
+                        idx = 34;
                     }
                     // |_
                     else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 34);
-
+                        idx = 34;
                     }
                     // ^|
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 35);
-
+                        idx = 35;
                     }
                     // _|
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 35);
-
+                        idx = 35;
                     }
                     // --
                     else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 35);
-
+                        idx = 35;
                     }
 
                 }
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateClosed) {
-
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 36);
-
+                    idx = 36;
                 }
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateOpen) {
-
-                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 37);
-
+                    idx = 37;
                 }
 
+            }
+
+            if (idx != 255) {
+                Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, idx);
             }
 
         }
@@ -193,130 +176,128 @@ void drawMaze_Small(uint8_t levelToRender) {
 
     uint8_t tileSize_Small = 4;
 
-    int startTileX = 0;
-    int startTileY = 0;
+    uint8_t startTileX = 0;
+    uint8_t startTileY = 0;
 
     for (uint8_t y = 0; y <= 23; y++) {
 
         for (uint8_t x = 0; x <= 23; x++) {
 
-            int mazeX = startTileX + x;
-            int mazeY = startTileY + y;
+            uint8_t mazeX = startTileX + x;
+            uint8_t mazeY = startTileY + y;
+            int8_t idx = 255;
 
             if (mazeX >= 0 && mazeX < Constants::MazeWidth && mazeY >= 0 && mazeY < Constants::MazeHeight) {
 
                 if (mazeX == 0 && mazeY == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 12);
+                    idx = 12;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1 && mazeY == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 13);
+                    idx = 13;
                 } 
                 else if (mazeX == 0 && mazeY == Constants::MazeHeight - 1) {  // Bottom left
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 14);
+                    idx = 14;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1 && mazeY == Constants::MazeHeight - 1) {  // Bottom right
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 15);
+                    idx = 15;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1 && maze.isWall(levelToRender, mazeX - 1, mazeY)) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 18);
+                    idx = 18;
                 } 
                 else if (mazeX == Constants::MazeWidth - 1) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 10);
+                    idx = 10;
                 }
                 else if (maze.isWall(levelToRender, mazeX, mazeY - 1) && mazeY == Constants::MazeHeight - 1) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 19);
+                    idx = 19;
                 } 
                 else if (mazeY == Constants::MazeHeight - 1) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 11);
+                    idx = 11;
                 }
                 else if (mazeY == 0 && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 17);
+                    idx = 17;
                 } 
                 else if (mazeY == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 9);
+                    idx = 9;
                 } 
                 else if (mazeX == 0 && maze.isWall(levelToRender, mazeX + 1, mazeY)) { 
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 16);
+                    idx = 16;
                 } 
                 else if (mazeX == 0) {
-                    Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 8);
+                    idx = 8;
                 } 
                 else if (maze.isWall(levelToRender, mazeX, mazeY)) {
 
                     if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 5);
+                        idx = 5;
                     } 
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 20);
+                        idx = 20;
                     } 
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 21);
+                        idx = 21;
                     } 
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 2);
+                        idx = 2;
                     } 
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 4);
+                        idx = 4;
                     } 
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {  // Updwards
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 6);
+                        idx = 6;
                     } 
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 22);
+                        idx = 22;
                     } 
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 23);
+                        idx = 23;
                     } 
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 3);
+                        idx = 3;
                     } 
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 1);
+                        idx = 1;
                     } 
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {  // 4 corners
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 7);
+                        idx = 7;
                     } 
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {  // corners
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 24);
+                        idx = 24;
                     } 
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 25);
+                        idx = 25;
                     } 
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 26);
+                        idx = 26;
                     } 
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 27);
+                        idx = 27;
                     } 
                     else if (maze.isWall(levelToRender, mazeX, mazeY)) {
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 0);
+                        idx = 0;
                     }
+
                 }
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
                     if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 28);
-
+                        idx = 28;
                     }
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 29);
-
+                        idx = 29;
                     }
                     else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 30);
-
+                        idx = 30;
                     }
                     else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-
-                        Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 31);
-
+                        idx = 31;
                     }
 
                 }
 
+            }
+
+            if (idx != 255) {
+                Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, idx);
             }
 
         }
@@ -677,7 +658,7 @@ void drawMenu() {
 
     }
 
-    if (arduboy.frameCount % 24 < 12) {
+    if (player.getInventoryCount() > 0 && arduboy.frameCount % 24 < 12) {
         Sprites::drawSelfMasked(menu.x + 4, 8 + ((menu.y - menu.top) * 16), Images::MenuCursor, 0);
     }
 
@@ -784,5 +765,32 @@ void drawBullet() {
         }
 
     }
+
+}
+
+
+void drawFlashlight() {
+
+    for (int8_t y = -7; y <= 7; y++) {
+
+        for (int8_t x = -7; x <= 7; x++) {
+
+            if ((x == 0 && y == 0) ||
+                (x == 0 && y == 1) ||
+                (x == 1 && y == 0) ||
+                (x == 1 && y == 1)) {
+
+                // Do nothing ..
+
+             }
+             else {
+                Sprites::drawErase(player.x - camera.x - 32 + (x * 32) , player.y - camera.y - 32 + (y * 32), Images::CircleOfLight_2, 0);
+            }
+
+        }
+
+    }
+
+    Sprites::drawErase(player.x - camera.x - 32, player.y - camera.y - 32, Images::CircleOfLight, 0);
 
 }

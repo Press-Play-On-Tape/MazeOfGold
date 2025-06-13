@@ -66,8 +66,8 @@ void handleMenu() {
     drawPlayer();
     drawDeath();
     drawChestCount(106 - menu.x, 0);
+    drawFlashlight();    
     drawMenu();
-
 
     if (arduboy.justPressed(UP_BUTTON)) {
 
@@ -111,7 +111,7 @@ void handleMenu() {
                 {
                     uint8_t idx = maze.getEmptyItem();
 
-                    
+
                     Item &item = maze.getItem(idx);
                     item.level = level;
                     item.x = player.x;
@@ -188,7 +188,6 @@ void handleMenu_ShowMap() {
     }
 
     checkCollisions(level);
-
     drawMaze_Small(mapLevel);
     drawChests_Small(mapLevel);
     drawEnemies_Small(mapLevel);

@@ -37,13 +37,12 @@ void handleTitle() {
 
     updateAndDrawCoins();
 
-    arduboy.drawFastHLine(0, 22, 128, BLACK);
-    arduboy.drawFastHLine(0, 23, 128, WHITE);
-    arduboy.drawFastHLine(0, 24, 128, BLACK);
-    Sprites::drawOverwrite(0, 25, Images::Title, 0);
-    arduboy.drawFastHLine(0, 39, 128, BLACK);
-    arduboy.drawFastHLine(0, 40, 128, WHITE);
-    arduboy.drawFastHLine(0, 41, 128, BLACK);
+    Sprites::drawExternalMask(0, 22, Images::Title, Images::Title_Mask, 0, 0);
+    
+    if (arduboy.frameCount > 96) {
+        Sprites::drawOverwrite(33, 47, Images::Press_A_Mask, 0);
+        Sprites::drawSelfMasked(34, 48, Images::Press_A, 0);
+    }
 
     if (arduboy.justPressed(A_BUTTON)) {
 

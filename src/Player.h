@@ -61,7 +61,7 @@ class Player {
 
         }
 
-        void reset() {
+        void reset(bool clearInventory, bool addMap) {
 
             this->x = 1 * tileSize;
             this->y = 1 * tileSize;
@@ -69,10 +69,16 @@ class Player {
             this->vy = 0;
             this->dir = 2;
 
-            this->inventoryCount = 0;
-            this->addItem(ItemType::Map);
+            if (clearInventory) {
+                this->inventoryCount = 0;
+                this->bulletCount = 0;
+            }
+
+            if (addMap) {
+                this->addItem(ItemType::Map);
+            }
+
             this->dead = false;
-            this->bulletCount = 0;
             this->holdingGun = false;
 
             #ifdef DEBUG

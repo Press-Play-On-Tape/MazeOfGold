@@ -20,6 +20,8 @@ enum class MenuDirection : uint8_t {
 };
 
 enum class GameState : uint8_t {
+    PPOT_Init,
+    PPOT,
     Menu_Init,
     Menu,
     Menu_Select,

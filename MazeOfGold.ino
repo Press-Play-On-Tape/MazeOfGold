@@ -25,14 +25,15 @@ Item puff;
 Item death;
 Item bullet;
 
-GameState gameState = GameState::Menu_Init;
-// GameState gameState_Next = GameState::Menu_Init;
-// uint8_t gameState_Transition;
+GameState gameState = GameState::PPOT_Init;
 
 uint8_t level = 0;
 uint8_t mapLevel = 0;
 uint8_t showEnemyCursors = 0;
-uint8_t displayChests;
+uint8_t show = 0;
+uint8_t displayChests = 0;
+uint8_t enableMaps = 0;
+uint8_t menuCursor = 0;
 
 void setup() {
 
@@ -51,6 +52,14 @@ void loop() {
 
 	switch (gameState) {
 	
+		case GameState::PPOT_Init:
+			splashScreen_Init();
+			[[fallthrough]]
+
+		case GameState::PPOT:
+			splashScreen();
+			break;
+
 		case GameState::Menu_Init:
 
 			initCoins();
@@ -64,17 +73,38 @@ void loop() {
 
 		case GameState::Menu_Select:
 
-			arduboy.drawFastHLine(0, 23, 128, WHITE);
-			Sprites::drawOverwrite(0, 25, Images::Title, 0);
-			arduboy.drawFastHLine(0, 40, 128, WHITE);
-			Sprites::drawOverwrite(20, 50, Images::Cursors, showEnemyCursors);
+			Sprites::drawExternalMask(0, 22, Images::Title, Images::Title_Mask, 0, 0);
+			Sprites::drawOverwrite(19, 44, Images::Cursors, menuCursor == 1 || arduboy.frameCount % 40 < 20 ? showEnemyCursors : 2);
+			Sprites::drawOverwrite(19, 52, Images::EnableMaps, menuCursor == 0 || arduboy.frameCount % 40 < 20 ? enableMaps : 2);
 
 			if (arduboy.justPressed(UP_BUTTON)) {
-				showEnemyCursors = 0;
+				menuCursor = 0;
 			}
 
 			if (arduboy.justPressed(DOWN_BUTTON)) {
-				showEnemyCursors = 1;
+				menuCursor = 1;
+			}
+
+			if (arduboy.justPressed(LEFT_BUTTON)) {
+
+				if (menuCursor == 0) {
+					showEnemyCursors = 0;
+				}
+				else {
+					enableMaps = 0;
+				}
+
+			}
+
+			if (arduboy.justPressed(RIGHT_BUTTON)) {
+
+				if (menuCursor == 0) {
+					showEnemyCursors = 1;
+				}
+				else {
+					enableMaps = 1;
+				}
+
 			}
 
 			if (arduboy.justPressed(A_BUTTON)) {
@@ -84,7 +114,7 @@ void loop() {
 				maze.setEnemyCount(2);
 
 				clearedLevel = 1;
-				startGame();
+				startGame(true);
 
 			}	
 			break;
@@ -107,7 +137,8 @@ void loop() {
 			drawPlayer();
 			drawDeath();
 			drawPuff();
-			drawBullet();
+			drawBullet();	
+			drawFlashlight();    
 
 			if (displayChests > 0) {
 
@@ -136,6 +167,7 @@ void loop() {
 			drawPlayer();
 			drawDeath();
 			drawPuff();
+			drawFlashlight();    
 
 			Sprites::drawOverwrite(0, 26, Images::GameOver, 0);
 
@@ -151,6 +183,7 @@ void loop() {
 			drawPlayer();
 			drawDeath();
 			drawPuff();
+			drawFlashlight();    
 
 			Sprites::drawOverwrite(0, 26, Images::LevelUp, 0);
 
@@ -160,7 +193,7 @@ void loop() {
 
 				gameState = GameState::GamePlay;
 				clearedLevel++;
-				startGame();
+				startGame(false);
 
 			}
 			break;
@@ -171,21 +204,21 @@ void loop() {
 
 }
 
-void startGame() {
+void startGame(bool clearInventory) {
 
 	uint8_t stairsPlaced = 0;
 
 	level = 0;
 
 	maze.generateMaze(player, arduboy.sBuffer);
-	player.reset();
+	player.reset(clearInventory, enableMaps == 0);
 
-	// Camera offset
 	camera.x = 0;
 	camera.y = 0;
 
 	menu.y = 0;
 	menu.top = 0;
+
 	displayChests = 0;
 	arduboy.frameCount == 0;
 

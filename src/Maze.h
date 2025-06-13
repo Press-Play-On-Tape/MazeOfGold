@@ -353,15 +353,15 @@ class Maze {
 
                 ItemType rnd = ItemType::None;
 
-
                 bool hasBomb = player.getItemIdx(ItemType::Bomb) != Constants::NoItem;
                 bool hasGun = player.getItemIdx(ItemType::Gun) != Constants::NoItem;
 
                 if (exitType == 0 || iLow > 0) {
-                    
-                    uint8_t maxRnd = (hasBomb && hasGun ? 6 : 3);
-                    
-                    if (random(0, maxRnd) == 0) {
+
+                    uint8_t maxRnd = (hasBomb && hasGun ? 6 : 2);
+                    maxRnd = random(0, maxRnd);      
+
+                    if (maxRnd == 0) {
 
                         if (!hasGun && hasBomb) {
 
@@ -495,7 +495,6 @@ class Maze {
             if (exitType != 1 && exitType != 2 && exitType !=3) {
                 exitType = 0;
             }
-            exitType = 1;
 
             while (stairsPlaced < 1) {
 
