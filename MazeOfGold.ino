@@ -177,24 +177,7 @@ void startGame() {
 
 	level = 0;
 
-	while (stairsPlaced < 1) {
-
-		maze.generateMaze_Clear();
-		maze.generateMaze(0, arduboy.sBuffer);
-		maze.generateMaze(1, arduboy.sBuffer);
-		stairsPlaced = maze.generateMaze_Stairs(0, 1);
-
-	}
-
-	maze.spawnChests(0, 0, 4);
-	maze.spawnChests(1, 5, 9);
-	maze.clearEnemys();
-	maze.spawnEnemys(0, 0, maze.getEnemyCount());
-	maze.spawnEnemys(1, 6, 6 + maze.getEnemyCount());
-
-	maze.spawnItems(player, 0, 0, 1);
-	maze.spawnItems(player, 1, 1, 2);
-
+	maze.generateMaze(player, arduboy.sBuffer);
 	player.reset();
 
 	// Camera offset

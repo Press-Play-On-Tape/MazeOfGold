@@ -109,7 +109,7 @@ void drawMaze(uint8_t level) {
                         Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 0);
                     }
                 }
-                else if (maze.getCell(level, mazeX, mazeY) == 2) {
+                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
                     if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
 
@@ -167,6 +167,16 @@ void drawMaze(uint8_t level) {
                         Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 35);
 
                     }
+
+                }
+                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateClosed) {
+
+                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 36);
+
+                }
+                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateOpen) {
+
+                    Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, 37);
 
                 }
 
@@ -282,7 +292,7 @@ void drawMaze_Small(uint8_t levelToRender) {
                         Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, 0);
                     }
                 }
-                else if (maze.getCell(level, mazeX, mazeY) == 2) {
+                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
                     if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
 
@@ -577,6 +587,10 @@ void drawItems(uint8_t level) {
             
                 case ItemType::Bomb:
                     Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::Bomb, 8);
+                    break;
+            
+                case ItemType::Key:
+                    Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::MenuItems, 6);
                     break;
             
                 case ItemType::Bomb_Active:

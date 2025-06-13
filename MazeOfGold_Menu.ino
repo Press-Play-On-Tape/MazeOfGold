@@ -110,6 +110,8 @@ void handleMenu() {
             case ItemType::Bomb:
                 {
                     uint8_t idx = maze.getEmptyItem();
+
+                    
                     Item &item = maze.getItem(idx);
                     item.level = level;
                     item.x = player.x;
@@ -118,7 +120,6 @@ void handleMenu() {
                     item.data = (13 * 6) - 1;
                     player.removeItem(menu.y);
                     menu.direction = MenuDirection::Closing;
-
                     handleMenu_MoveUp();
                 }
 
@@ -129,6 +130,43 @@ void handleMenu() {
                 player.setHoldingGun(true);
                 menu.direction = MenuDirection::Closing;
                 handleMenu_MoveUp();
+                break;
+
+            case ItemType::Key:
+                
+                if (maze.getCell(level, (player.x / tileSize) - 1, (player.y / tileSize)) == CellTypes::GateClosed) {
+
+                    maze.setCell(level, (player.x / tileSize) - 1, (player.y / tileSize), CellTypes::GateOpen);
+                    player.removeItem(menu.y);
+                    menu.direction = MenuDirection::Closing;
+                    handleMenu_MoveUp();
+
+                }
+                else if (maze.getCell(level, (player.x / tileSize) + 1, (player.y / tileSize)) == CellTypes::GateClosed) {
+
+                    maze.setCell(level, (player.x / tileSize) + 1, (player.y / tileSize), CellTypes::GateOpen);
+                    player.removeItem(menu.y);
+                    menu.direction = MenuDirection::Closing;
+                    handleMenu_MoveUp();
+
+                }
+                else if (maze.getCell(level, (player.x / tileSize), (player.y / tileSize) - 1) == CellTypes::GateClosed) {
+
+                    maze.setCell(level, (player.x / tileSize), (player.y / tileSize) - 1, CellTypes::GateOpen);
+                    player.removeItem(menu.y);
+                    menu.direction = MenuDirection::Closing;
+                    handleMenu_MoveUp();
+
+                }
+                else if (maze.getCell(level, (player.x / tileSize), (player.y / tileSize) + 1) == CellTypes::GateClosed) {
+
+                    maze.setCell(level, (player.x / tileSize), (player.y / tileSize) + 1, CellTypes::GateOpen);
+                    player.removeItem(menu.y);
+                    menu.direction = MenuDirection::Closing;
+                    handleMenu_MoveUp();
+
+                }
+
                 break;
 
         }

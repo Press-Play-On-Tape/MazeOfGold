@@ -2,6 +2,16 @@
 
 #include "Constants.h"
 
+#define DEBUG_BREAK    asm volatile("break\n");
+
+enum CellTypes : uint8_t {
+    Empty,
+    Wall,
+    Stairs,
+    GateClosed,
+    GateOpen,
+};
+
 
 enum class MenuDirection : uint8_t {
     None,
@@ -27,6 +37,7 @@ enum class ItemType : uint8_t {
     Gun,
     Bullets,
     Wine,
+    Key,
     //-------------------------
     Bomb_Active,
     Puff_Bomb,

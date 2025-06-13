@@ -15,7 +15,7 @@ void updateEnemys(uint8_t level) {
             int testX = enemy.x + (Constants::DirectionOffsetX[enemy.dir] * tileSize);
             int testY = enemy.y + (Constants::DirectionOffsetY[enemy.dir] * tileSize);
 
-            bool forwardClear = (maze.getCell(enemy.level, testX / tileSize, testY / tileSize) == 0);
+            bool forwardClear = (maze.getCell(enemy.level, testX / tileSize, testY / tileSize) == CellTypes::Empty);
             bool wantTurn = (random(100) < 20);
 
             if (!forwardClear || wantTurn) {
@@ -36,7 +36,7 @@ void updateEnemys(uint8_t level) {
                     int newX = enemy.x + (Constants::DirectionOffsetX[newDir] * tileSize);
                     int newY = enemy.y + (Constants::DirectionOffsetY[newDir] * tileSize);
 
-                    if (maze.getCell(enemy.level, newX / tileSize, newY / tileSize) == 0) {
+                    if (maze.getCell(enemy.level, newX / tileSize, newY / tileSize) == CellTypes::Empty) {
 
                         if (!(newX == enemy.lastX && newY == enemy.lastY)) {
 
@@ -207,6 +207,7 @@ void checkCollisions(uint8_t level) {
 
             case ItemType::Bomb:
             case ItemType::Bullets:
+            case ItemType::Key:
 
                 if (arduboy.collide(itemRect, playerRect)) { 
 
@@ -435,7 +436,7 @@ void updatePlayer() {
         tileX = player.x / tileSize;
         tileY = player.y / tileSize;
 
-        if (maze.getCell(level, tileX, tileY) == 2) {
+        if (maze.getCell(level, tileX, tileY) == CellTypes::Stairs) {
 
             puff.x = player.x;
             puff.y = player.y;
