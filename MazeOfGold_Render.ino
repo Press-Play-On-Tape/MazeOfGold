@@ -22,142 +22,61 @@ void drawMaze(uint8_t level) {
             uint8_t mazeY = startTileY + y;
             uint8_t idx = 255;
 
+            bool isWallXMY = maze.isWall(level, mazeX - 1, mazeY);
+            bool isWallXPY = maze.isWall(level, mazeX + 1, mazeY);
+            bool isWallXYM = maze.isWall(level, mazeX, mazeY - 1);
+            bool isWallXYP = maze.isWall(level, mazeX, mazeY + 1);
+
             if (mazeX >= 0 && mazeX < Constants::MazeWidth && mazeY >= 0 && mazeY < Constants::MazeHeight) {
 
-                if (mazeX == 0 && mazeY == 0) {
-                    idx = 12;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1 && mazeY == 0) {
-                    idx = 13;
-                } 
-                else if (mazeX == 0 && mazeY == Constants::MazeHeight - 1) {  // Bottom left
-                    idx = 14;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1 && mazeY == Constants::MazeHeight - 1) {  // Bottom right
-                    idx = 15;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1 && maze.isWall(level, mazeX - 1, mazeY)) {
-                    idx = 18;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1) {
-                    idx = 10;
-                }
-                else if (maze.isWall(level, mazeX, mazeY - 1) && mazeY == Constants::MazeHeight - 1) {
-                    idx = 19;
-                } 
-                else if (mazeY == Constants::MazeHeight - 1) {
-                    idx = 11;
-                }
-                else if (mazeY == 0 && maze.isWall(level, mazeX, mazeY + 1)) {
-                    idx = 17;
-                } 
-                else if (mazeY == 0) {
-                    idx = 9;
-                } 
-                else if (mazeX == 0 && maze.isWall(level, mazeX + 1, mazeY)) { 
-                    idx = 16;
-                } 
-                else if (mazeX == 0) {
-                    idx = 8;
-                } 
+                if (mazeX == 0 && mazeY == 0)                                                           { idx = 12; } 
+                else if (mazeX == Constants::MazeWidth - 1 && mazeY == 0)                               { idx = 13; } 
+                else if (mazeX == 0 && mazeY == Constants::MazeHeight - 1)                              { idx = 14; }  // Bottom left
+                else if (mazeX == Constants::MazeWidth - 1 && mazeY == Constants::MazeHeight - 1)       { idx = 15; }  // Bottom right
+                else if (mazeX == Constants::MazeWidth - 1 && isWallXMY)                                { idx = 18; } 
+                else if (mazeX == Constants::MazeWidth - 1)                                             { idx = 10; }
+                else if (isWallXYM && mazeY == Constants::MazeHeight - 1)                               { idx = 19; } 
+                else if (mazeY == Constants::MazeHeight - 1)                                            { idx = 11; }
+                else if (mazeY == 0 && isWallXYP)                                                       { idx = 17; } 
+                else if (mazeY == 0)                                                                    { idx = 9;  } 
+                else if (mazeX == 0 && isWallXPY)                                                       { idx = 16; } 
+                else if (mazeX == 0)                                                                    { idx = 8;  } 
                 else if (maze.isWall(level, mazeX, mazeY)) {
 
-                    if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 5;
-                    } 
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 20;
-                    } 
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 21;
-                    } 
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 2;
-                    } 
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 4;
-                    } 
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {  // Updwards
-                        idx = 6;
-                    } 
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 22;
-                    } 
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 23;
-                    } 
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 3;
-                    } 
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 1;
-                    } 
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {  // 4 corners
-                        idx = 7;
-                    } 
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {  // corners
-                        idx = 24;
-                    } 
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 25;
-                    } 
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 26;
-                    } 
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 27;
-                    } 
-                    else if (maze.isWall(level, mazeX, mazeY)) {
-                        idx = 0;
-                    }
+                    if (isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                             { idx = 5;  } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                         { idx = 20; } 
+                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                         { idx = 21; } 
+                    else if (isWallXMY && !isWallXPY && !isWallXYM && !isWallXYP)                       { idx = 2;  } 
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                       { idx = 4;  } 
+                    else if (!isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                        { idx = 6;  }  // Updwards
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 22; } 
+                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 23; } 
+                    else if (!isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                       { idx = 3;  } 
+                    else if (!isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                       { idx = 1;  } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && isWallXYP)                          { idx = 7;  }  // 4 corners
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                        { idx = 24; } 
+                    else if (isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                        { idx = 25; } 
+                    else if (!isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                        { idx = 26; } 
+                    else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                        { idx = 27; } 
+                    else if (maze.isWall(level, mazeX, mazeY))                                          { idx = 0;  }
 
                 }
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
-                    if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 28;
-                    }
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 29;
-                    }
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 30;
-                    }
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 31;
-                    }
-                    // ||
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 33;
-                    }
-                    // |^
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 34;
-                    }
-                    // |_
-                    else if (maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && !maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 34;
-                    }
-                    // ^|
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 35;
-                    }
-                    // _|
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && maze.isWall(level, mazeX + 1, mazeY) && !maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 35;
-                    }
-                    // --
-                    else if (!maze.isWall(level, mazeX - 1, mazeY) && !maze.isWall(level, mazeX + 1, mazeY) && maze.isWall(level, mazeX, mazeY - 1) && maze.isWall(level, mazeX, mazeY + 1)) {
-                        idx = 35;
-                    }
+                    if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                              { idx = 28; }
+                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                         { idx = 29; }
+                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 30; }
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 31; }
+                    else if (isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                        { idx = 33; } // ||
+                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 34; } // |^
+                    else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                        { idx = 34; } // |_
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 35; } // ^|
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                        { idx = 35; } // _|
+                    else if (!isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                        { idx = 35; } // --
 
                 }
-                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateClosed) {
-                    idx = 36;
-                }
-                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateOpen) {
-                    idx = 37;
-                }
+                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateClosed)                    { idx = 36; }
+                else if (maze.getCell(level, mazeX, mazeY) == CellTypes::GateOpen)                      { idx = 37; }
 
             }
 
@@ -185,118 +104,59 @@ void drawMaze_Small(uint8_t levelToRender) {
 
             uint8_t mazeX = startTileX + x;
             uint8_t mazeY = startTileY + y;
-            int8_t idx = 255;
+            int8_t idx = Constants::NoItem;
 
             if (mazeX >= 0 && mazeX < Constants::MazeWidth && mazeY >= 0 && mazeY < Constants::MazeHeight) {
 
-                if (mazeX == 0 && mazeY == 0) {
-                    idx = 12;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1 && mazeY == 0) {
-                    idx = 13;
-                } 
-                else if (mazeX == 0 && mazeY == Constants::MazeHeight - 1) {  // Bottom left
-                    idx = 14;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1 && mazeY == Constants::MazeHeight - 1) {  // Bottom right
-                    idx = 15;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1 && maze.isWall(levelToRender, mazeX - 1, mazeY)) {
-                    idx = 18;
-                } 
-                else if (mazeX == Constants::MazeWidth - 1) {
-                    idx = 10;
-                }
-                else if (maze.isWall(levelToRender, mazeX, mazeY - 1) && mazeY == Constants::MazeHeight - 1) {
-                    idx = 19;
-                } 
-                else if (mazeY == Constants::MazeHeight - 1) {
-                    idx = 11;
-                }
-                else if (mazeY == 0 && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                    idx = 17;
-                } 
-                else if (mazeY == 0) {
-                    idx = 9;
-                } 
-                else if (mazeX == 0 && maze.isWall(levelToRender, mazeX + 1, mazeY)) { 
-                    idx = 16;
-                } 
-                else if (mazeX == 0) {
-                    idx = 8;
-                } 
+                bool isWallXMY = maze.isWall(levelToRender, mazeX - 1, mazeY);
+                bool isWallXPY = maze.isWall(levelToRender, mazeX + 1, mazeY);
+                bool isWallXYM = maze.isWall(levelToRender, mazeX, mazeY - 1);
+                bool isWallXYP = maze.isWall(levelToRender, mazeX, mazeY + 1);
+
+                if (mazeX == 0 && mazeY == 0)                                                       { idx = 12; } 
+                else if (mazeX == Constants::MazeWidth - 1 && mazeY == 0)                           { idx = 13; } 
+                else if (mazeX == 0 && mazeY == Constants::MazeHeight - 1)                          { idx = 14; }  // Bottom left
+                else if (mazeX == Constants::MazeWidth - 1 && mazeY == Constants::MazeHeight - 1)   { idx = 15; }  // Bottom right
+                else if (mazeX == Constants::MazeWidth - 1 && isWallXMY)                            { idx = 18; } 
+                else if (mazeX == Constants::MazeWidth - 1)                                         { idx = 10; }
+                else if (isWallXYM && mazeY == Constants::MazeHeight - 1)                           { idx = 19; } 
+                else if (mazeY == Constants::MazeHeight - 1)                                        { idx = 11; }
+                else if (mazeY == 0 && isWallXYP)                                                   { idx = 17; } 
+                else if (mazeY == 0)                                                                { idx = 9;  } 
+                else if (mazeX == 0 && isWallXPY)                                                   { idx = 16; } 
+                else if (mazeX == 0)                                                                { idx = 8;  } 
                 else if (maze.isWall(levelToRender, mazeX, mazeY)) {
 
-                    if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 5;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 20;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 21;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 2;
-                    } 
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 4;
-                    } 
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {  // Updwards
-                        idx = 6;
-                    } 
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 22;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 23;
-                    } 
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 3;
-                    } 
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 1;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {  // 4 corners
-                        idx = 7;
-                    } 
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {  // corners
-                        idx = 24;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 25;
-                    } 
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 26;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 27;
-                    } 
-                    else if (maze.isWall(levelToRender, mazeX, mazeY)) {
-                        idx = 0;
-                    }
+                    if (isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                         { idx = 5;  } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                     { idx = 20; } 
+                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                     { idx = 21; } 
+                    else if (isWallXMY && !isWallXPY && !isWallXYM && !isWallXYP)                   { idx = 2;  } 
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                   { idx = 4;  } 
+                    else if (!isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                    { idx = 6;  }  // Updwards
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                     { idx = 22; } 
+                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                     { idx = 23; } 
+                    else if (!isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                   { idx = 3;  } 
+                    else if (!isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                   { idx = 1;  } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && isWallXYP)                      { idx = 7;  }  // 4 corners
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                    { idx = 24; } 
+                    else if (isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                    { idx = 25; } 
+                    else if (!isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                    { idx = 26; } 
+                    else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                    { idx = 27; } 
+                    else if (maze.isWall(levelToRender, mazeX, mazeY))                              { idx = 0;  }
 
                 }
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
-                    if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && !maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 28;
-                    }
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && !maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 29;
-                    }
-                    else if (maze.isWall(levelToRender, mazeX - 1, mazeY) && !maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 30;
-                    }
-                    else if (!maze.isWall(levelToRender, mazeX - 1, mazeY) && maze.isWall(levelToRender, mazeX + 1, mazeY) && maze.isWall(levelToRender, mazeX, mazeY - 1) && maze.isWall(levelToRender, mazeX, mazeY + 1)) {
-                        idx = 31;
-                    }
+                    if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                          { idx = 28; }
+                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                     { idx = 29; }
+                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                     { idx = 30; }
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                     { idx = 31; }
 
                 }
 
             }
 
-            if (idx != 255) {
+            if (idx != Constants::NoItem) {
                 Sprites::drawSelfMasked((mazeX * tileSize_Small) - camera_Small.x, (mazeY * tileSize_Small) - camera_Small.y, Images::Blocks_Small, idx);
             }
 
