@@ -34,6 +34,7 @@ uint8_t show = 0;
 uint8_t displayChests = 0;
 uint8_t enableMaps = 0;
 uint8_t menuCursor = 0;
+bool darkMode = false;
 
 void setup() {
 

@@ -20,7 +20,7 @@ void drawMaze(uint8_t level) {
 
             uint8_t mazeX = startTileX + x;
             uint8_t mazeY = startTileY + y;
-            uint8_t idx = 255;
+            uint8_t idx = Constants::NoItem;
 
             bool isWallXMY = maze.isWall(level, mazeX - 1, mazeY);
             bool isWallXPY = maze.isWall(level, mazeX + 1, mazeY);
@@ -80,7 +80,7 @@ void drawMaze(uint8_t level) {
 
             }
 
-            if (idx != 255) {
+            if (idx != Constants::NoItem) {
                 Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, idx);
             }
 
@@ -104,7 +104,7 @@ void drawMaze_Small(uint8_t levelToRender) {
 
             uint8_t mazeX = startTileX + x;
             uint8_t mazeY = startTileY + y;
-            int8_t idx = Constants::NoItem;
+            uint8_t idx = Constants::NoItem;
 
             if (mazeX >= 0 && mazeX < Constants::MazeWidth && mazeY >= 0 && mazeY < Constants::MazeHeight) {
 
@@ -203,25 +203,7 @@ void drawPlayer() {
 
         if (player.isHoldingGun()) {
 
-            switch (player.dir) {
-            
-                case 0:
-                    Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player_Gun_00, Images::Player_Gun_00_Mask, 0, 0);
-                    break;
-            
-                case 1:
-                    Sprites::drawExternalMask(player.x - camera.x - 2, player.y - camera.y, Images::Player_Gun_01, Images::Player_Gun_01_Mask, 0, 0);
-                    break;
-            
-                case 2:
-                    Sprites::drawExternalMask(player.x - camera.x, player.y - camera.y, Images::Player_Gun_02, Images::Player_Gun_02_Mask, 0, 0);
-                    break;
-            
-                case 3:
-                    Sprites::drawExternalMask(player.x - camera.x - 1, player.y - camera.y, Images::Player_Gun_03, Images::Player_Gun_03_Mask, 0, 0);
-                    break;
-
-            }
+            Sprites::drawExternalMask(player.x - camera.x - 2, player.y - camera.y, Images::Player_Gun, Images::Player_Gun_Mask, 0, 0);
 
             if (menu.direction == MenuDirection::None) {
                 Sprites::drawErase(0, 0, Images::MenuItema_Gun_Mask, 0);
@@ -630,6 +612,8 @@ void drawBullet() {
 
 
 void drawFlashlight() {
+
+    if (!darkMode) { return; }
 
     for (int8_t y = -7; y <= 7; y++) {
 
