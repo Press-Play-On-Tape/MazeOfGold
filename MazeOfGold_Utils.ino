@@ -208,6 +208,7 @@ void checkCollisions(uint8_t level) {
             case ItemType::Bomb:
             case ItemType::Bullets:
             case ItemType::Key:
+            case ItemType::Candle:
 
                 if (arduboy.collide(itemRect, playerRect)) { 
 

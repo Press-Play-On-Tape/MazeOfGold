@@ -40,6 +40,7 @@ enum class ItemType : uint8_t {
     Bullets,
     Wine,
     Key,
+    Candle,
     //-------------------------
     Bomb_Active,
     Puff_Bomb,

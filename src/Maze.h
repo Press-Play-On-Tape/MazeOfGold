@@ -340,6 +340,27 @@ class Maze {
 
                 int x, y;
 
+                // Place an object immediately beside the player ..
+
+                // if (i == 0) {
+
+                //     Item &item = this->items[i];
+                //     item.level = level;
+
+                //     if (this->getCell(level, 1, 2) == CellTypes::Empty) {
+                //         item.x = 1 * tileSize;
+                //         item.y = 2 * tileSize;
+                //     }
+                //     else {
+                //         item.x = 2 * tileSize;
+                //         item.y = 1 * tileSize;
+                //     }
+
+                //     item.itemType = ItemType::Candle;
+                //     continue;
+
+                // }
+
                 do {
 
                     x = random(5, Constants::MazeWidth - 1);

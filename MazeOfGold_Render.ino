@@ -1,13 +1,6 @@
 #include <Arduboy2Core.h>
 #include <Sprites.h>
 
-void drawChestCount(int8_t x, uint8_t y) {
-
-    arduboy.fillRect(x - 1, y - 1, 17, 14, BLACK);
-    Sprites::drawExternalMask(x, y, Images::Score, Images::Score_Mask, maze.getActiveChests() - 1, 0);
-    
-}
-
 
 void drawMaze(uint8_t level) {
 
@@ -416,6 +409,10 @@ void drawItems(uint8_t level) {
                     Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::MenuItems, 6);
                     break;
             
+                case ItemType::Candle:
+                    Sprites::drawSelfMasked(item.x - camera.x, item.y - camera.y, Images::Candle, 0);
+                    break;
+            
                 case ItemType::Bomb_Active:
                     {
                         uint8_t idx = item.data / 6;
@@ -460,88 +457,6 @@ void drawItems(uint8_t level) {
     }
 
 }
-
-void drawMenu() {
-
-    arduboy.fillRect(menu.x, 0, 30, 64, BLACK);
-    arduboy.drawFastVLine(menu.x + 1, 0, 64, WHITE);
-
-
-    if (menu.top > 0) {
-    
-        Sprites::drawSelfMasked(menu.x + 8, 1, Images::MenuArrows, 0);
-
-    }
-    else {
-
-        Sprites::drawSelfMasked(menu.x + 8, 1, Images::MenuArrows, 1);
-    
-    }
-
-    uint8_t y = 10;
-
-    for (uint8_t i = menu.top; i < menu.top + 3; i++) {
-        
-        if (i < player.getInventoryCount()) {
-
-            if (player.getInventoryItem(i) != ItemType::Gun) {
-
-                Sprites::drawSelfMasked(menu.x + 6, y, Images::MenuItems, static_cast<uint8_t>(player.getInventoryItem(i)));
-
-            }
-            else {
-
-                Sprites::drawSelfMasked(menu.x + 6, y, Images::MenuItems_Gun, player.getBulletCount());
-
-            }
-
-        }
-        y = y + 16;
-
-    }
-
-    if (player.getInventoryCount() > 0 && arduboy.frameCount % 24 < 12) {
-        Sprites::drawSelfMasked(menu.x + 4, 8 + ((menu.y - menu.top) * 16), Images::MenuCursor, 0);
-    }
-
-    if (player.getInventoryCount() < 3 || player.getInventoryCount() == menu.top + 3) {
-        Sprites::drawSelfMasked(menu.x + 8, 55, Images::MenuArrows, 3);
-    }
-    else {
-        Sprites::drawSelfMasked(menu.x + 8, 55, Images::MenuArrows, 2);
-    }
-
-    if (menu.direction == MenuDirection::Openning && menu.x > 128 - 22) {
-    
-        menu.x = menu.x - 2;
-
-        if (menu.x == 128 - 22) {
-        
-            menu.direction = MenuDirection::None;
-
-        }
-
-    }
-
-    if (menu.direction == MenuDirection::Closing) {
-    
-        if (menu.x < 128) {
-    
-            menu.x = menu.x + 2;
-
-            if (menu.x == 128) {
-            
-                menu.direction = MenuDirection::None;
-                gameState = GameState::GamePlay;
-                    
-            }
-
-        }
-
-    }
-
-}
-
 
 void drawBullet() {
 
@@ -613,7 +528,21 @@ void drawBullet() {
 
 void drawFlashlight() {
 
-    if (!darkMode) { return; }
+    if (!darkMode) { 
+    
+        if (!player.isUsingCandle()) { return; }
+
+            Sprites::drawExternalMask(0, 0, Images::Candle, Images::Candle_Mask, 7 - player.getCandleCount(), 0);
+
+            if (arduboy.frameCount % 32/*56*/ == 0) player.setCandleCount(player.getCandleCount() - 1);
+
+            if (!player.isUsingCandle() && darkModeCounter > 0) {
+                darkMode = true;
+            }
+
+        return; 
+
+    }
 
     for (int8_t y = -7; y <= 7; y++) {
 
@@ -628,13 +557,13 @@ void drawFlashlight() {
 
              }
              else {
-                Sprites::drawErase(player.x - camera.x - 32 + (x * 32) , player.y - camera.y - 32 + (y * 32), Images::CircleOfLight_2, 0);
+                Sprites::drawErase(player.x - camera.x - 32 + (x * 32) , player.y - camera.y - 28 + (y * 32), Images::CircleOfLight_2, 0);
             }
 
         }
 
     }
 
-    Sprites::drawErase(player.x - camera.x - 32, player.y - camera.y - 32, Images::CircleOfLight, 0);
+    Sprites::drawErase(player.x - camera.x - 32, player.y - camera.y - 28, Images::CircleOfLight, 0);
 
 }

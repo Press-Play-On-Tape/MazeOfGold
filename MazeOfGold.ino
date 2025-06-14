@@ -34,7 +34,10 @@ uint8_t show = 0;
 uint8_t displayChests = 0;
 uint8_t enableMaps = 0;
 uint8_t menuCursor = 0;
+
 bool darkMode = false;
+uint16_t darkModeCounter = 0;
+// uint8_t usingCandle = 0;
 
 void setup() {
 
@@ -50,6 +53,47 @@ void loop() {
 
 	arduboy.pollButtons();
 	arduboy.clear();
+
+
+	if (gameState == GameState::GamePlay && darkModeCounter == 0  && arduboy.frameCount > 512 && random(512) == 0) {
+		darkModeCounter = 512;
+	}
+
+	switch (darkModeCounter) {
+
+		case 512:
+		case 510:
+		case 508:
+		case 505:
+
+		case 10:
+		case 7:
+		case 5:
+			arduboy.invert(true);
+			darkModeCounter--;
+			break;
+
+		case 2:
+			arduboy.invert(true);
+			darkModeCounter--;
+			darkMode = false;
+			break;
+
+		case 502:
+			arduboy.invert(true);
+			darkModeCounter--;
+			darkMode = true;
+			break;
+
+		case 0:
+			break;
+
+		default:
+			arduboy.invert(false);
+			darkModeCounter--;
+			break;
+
+	}
 
 	switch (gameState) {
 	
@@ -112,6 +156,7 @@ void loop() {
 
 				randomSeed(arduboy.generateRandomSeed());
 				gameState = GameState::GamePlay;
+				arduboy.frameCount = 0;
 				maze.setEnemyCount(2);
 
 				clearedLevel = 1;
@@ -222,5 +267,7 @@ void startGame(bool clearInventory) {
 
 	displayChests = 0;
 	arduboy.frameCount == 0;
+	darkMode = false;
+	darkModeCounter = 0;
 
 }

@@ -132,6 +132,17 @@ void handleMenu() {
                 handleMenu_MoveUp();
                 break;
 
+            case ItemType::Candle:
+                
+                if (darkMode) {
+                    darkMode = false;
+                    player.removeItem(menu.y);
+                    player.setCandleCount(7);
+                    menu.direction = MenuDirection::Closing;
+                    handleMenu_MoveUp();
+                }
+                break;
+
             case ItemType::Key:
                 
                 if (maze.getCell(level, (player.x / tileSize) - 1, (player.y / tileSize)) == CellTypes::GateClosed) {
@@ -216,4 +227,99 @@ void handleMenu_ShowMap() {
         menu.direction = MenuDirection::Closing;
     }
 
+}
+
+void drawMenu() {
+
+    arduboy.fillRect(menu.x, 0, 30, 64, BLACK);
+    arduboy.drawFastVLine(menu.x + 1, 0, 64, WHITE);
+
+
+    if (menu.top > 0) {
+    
+        Sprites::drawSelfMasked(menu.x + 8, 1, Images::MenuArrows, 0);
+
+    }
+    else {
+
+        Sprites::drawSelfMasked(menu.x + 8, 1, Images::MenuArrows, 1);
+    
+    }
+
+    uint8_t y = 10;
+
+    for (uint8_t i = menu.top; i < menu.top + 3; i++) {
+        
+        if (i < player.getInventoryCount()) {
+
+            if (player.getInventoryItem(i) != ItemType::Gun) {
+
+                Sprites::drawSelfMasked(menu.x + 6, y, Images::MenuItems, static_cast<uint8_t>(player.getInventoryItem(i)));
+
+            }
+            else {
+
+                Sprites::drawSelfMasked(menu.x + 6, y, Images::MenuItems_Gun, player.getBulletCount());
+
+            }
+
+        }
+        y = y + 16;
+
+    }
+
+    if (player.getInventoryCount() > 0 && arduboy.frameCount % 24 < 12) {
+        Sprites::drawSelfMasked(menu.x + 4, 8 + ((menu.y - menu.top) * 16), Images::MenuCursor, 0);
+    }
+
+    if (player.getInventoryCount() < 3 || player.getInventoryCount() == menu.top + 3) {
+        Sprites::drawSelfMasked(menu.x + 8, 55, Images::MenuArrows, 3);
+    }
+    else {
+        Sprites::drawSelfMasked(menu.x + 8, 55, Images::MenuArrows, 2);
+    }
+
+    if (menu.direction == MenuDirection::Openning && menu.x > 128 - 22) {
+    
+        menu.x = menu.x - 2;
+
+        if (menu.x == 128 - 22) {
+        
+            menu.direction = MenuDirection::None;
+
+        }
+
+    }
+
+    if (menu.direction == MenuDirection::Closing) {
+    
+        if (menu.x < 128) {
+    
+            menu.x = menu.x + 2;
+
+            if (menu.x == 128) {
+            
+                menu.direction = MenuDirection::None;
+                gameState = GameState::GamePlay;
+                    
+            }
+
+        }
+
+    }
+
+}
+
+void drawChestCount(int8_t x, uint8_t y) {
+
+    if (darkMode) {
+
+    }
+    else {
+
+        arduboy.fillRect(x - 1, y - 1, 17, 14, BLACK);
+        Sprites::drawExternalMask(x, y, Images::Score, Images::Score_Mask, maze.getActiveChests() - 1, 0);
+
+    }
+    
 }

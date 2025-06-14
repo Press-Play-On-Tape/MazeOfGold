@@ -19,6 +19,7 @@ class Player {
         bool dead = false;
         bool holdingGun = false;
         uint8_t bulletCount = 0;
+        uint8_t usingCandle = 0;
 
         Player() { }
 
@@ -75,7 +76,9 @@ class Player {
             }
 
             if (addMap) {
-                this->addItem(ItemType::Map);
+                if (this->inventoryCount == 0) {
+                    this->addItem(ItemType::Map);
+                }
             }
 
             this->dead = false;
@@ -93,10 +96,13 @@ class Player {
         ItemType &getInventoryItem(uint8_t idx)         { return this->inventory[idx]; }
         bool isDead()                                   { return this->dead; }
         bool isHoldingGun()                             { return this->holdingGun; }
+        bool isUsingCandle()                            { return this->usingCandle > 0; }
         uint8_t getBulletCount()                        { return this->bulletCount; }
+        uint8_t getCandleCount()                        { return this->usingCandle; }
 
         void setDead(bool val)                          { this->dead = val; }
         void setHoldingGun(bool val)                    { this->holdingGun = val; }
         void setBulletCount(uint8_t val)                { this->bulletCount = val; }
+        void setCandleCount(uint8_t val)                { this->usingCandle = val; }
 
 };
