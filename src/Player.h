@@ -7,8 +7,8 @@ class Player {
 
     public:
         
-        int16_t x = 1 * tileSize;
-        int16_t y = 1 * tileSize;
+        int16_t x = 1 * Constants::TileSize;
+        int16_t y = 1 * Constants::TileSize;
         int8_t vx = 0;
         int8_t vy = 0;
 
@@ -64,8 +64,8 @@ class Player {
 
         void reset(bool clearInventory, bool addMap) {
 
-            this->x = 1 * tileSize;
-            this->y = 1 * tileSize;
+            this->x = 1 * Constants::TileSize;
+            this->y = 1 * Constants::TileSize;
             this->vx = 0;
             this->vy = 0;
             this->dir = 2;

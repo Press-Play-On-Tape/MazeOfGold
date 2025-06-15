@@ -1,13 +1,12 @@
 #pragma once
 
-
-const uint8_t DELAY = 12;
-
-const int tileSize = 12;
-const int screenTileWidth = (128 / tileSize) + 1;
-const int screenTileHeight = (64 / tileSize) + 1;
-
 namespace Constants { 
+
+	static constexpr uint8_t DELAY = 12;
+
+	static constexpr uint8_t TileSize = 12;
+	static constexpr uint8_t ScreenTileWidth = (128 / TileSize) + 1;
+	static constexpr uint8_t ScreenTileHeight = (64 / TileSize) + 1;
 
 	static constexpr int8_t DirectionOffsetX[4] = {0, 1, 0, -1};
 	static constexpr int8_t DirectionOffsetY[4] = {-1, 0, 1, 0};

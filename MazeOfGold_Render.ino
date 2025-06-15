@@ -4,12 +4,12 @@
 
 void drawMaze(uint8_t level) {
 
-    uint8_t startTileX = camera.x / tileSize;
-    uint8_t startTileY = camera.y / tileSize;
+    uint8_t startTileX = camera.x / Constants::TileSize;
+    uint8_t startTileY = camera.y / Constants::TileSize;
 
-    for (uint8_t y = 0; y <= screenTileHeight; y++) {
+    for (uint8_t y = 0; y <= Constants::ScreenTileHeight; y++) {
 
-        for (uint8_t x = 0; x <= screenTileWidth; x++) {
+        for (uint8_t x = 0; x <= Constants::ScreenTileWidth; x++) {
 
             uint8_t mazeX = startTileX + x;
             uint8_t mazeY = startTileY + y;
@@ -37,33 +37,35 @@ void drawMaze(uint8_t level) {
                 else if (maze.isWall(level, mazeX, mazeY)) {
 
                     if (isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                             { idx = 5;  } 
-                    else if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                         { idx = 20; } 
                     else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                         { idx = 21; } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                         { idx = 20; } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && isWallXYP)                          { idx = 7;  }  // 4 corners
+                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 23; } 
+                    else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                        { idx = 27; } 
                     else if (isWallXMY && !isWallXPY && !isWallXYM && !isWallXYP)                       { idx = 2;  } 
+                    else if (isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                        { idx = 25; } 
+
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 22; } 
+                    else if (!isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                        { idx = 26; } 
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                        { idx = 24; } 
                     else if (!isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                       { idx = 4;  } 
                     else if (!isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                        { idx = 6;  }  // Updwards
-                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 22; } 
-                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 23; } 
                     else if (!isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                       { idx = 3;  } 
                     else if (!isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                       { idx = 1;  } 
-                    else if (isWallXMY && isWallXPY && isWallXYM && isWallXYP)                          { idx = 7;  }  // 4 corners
-                    else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                        { idx = 24; } 
-                    else if (isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                        { idx = 25; } 
-                    else if (!isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                        { idx = 26; } 
-                    else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                        { idx = 27; } 
                     else if (maze.isWall(level, mazeX, mazeY))                                          { idx = 0;  }
 
                 }
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
                     if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                              { idx = 28; }
-                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                         { idx = 29; }
-                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 30; }
-                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 31; }
                     else if (isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                        { idx = 33; } // ||
+                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                         { idx = 29; }
                     else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 34; } // |^
                     else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                        { idx = 34; } // |_
-                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 35; } // ^|
+                    else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                         { idx = 30; }
+
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 31; }
+                    // else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                         { idx = 35; } // ^|
                     else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                        { idx = 35; } // _|
                     else if (!isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                        { idx = 35; } // --
 
@@ -74,7 +76,7 @@ void drawMaze(uint8_t level) {
             }
 
             if (idx != Constants::NoItem) {
-                Sprites::drawSelfMasked((mazeX * tileSize) - camera.x, (mazeY * tileSize) - camera.y, Images::Blocks, idx);
+                Sprites::drawSelfMasked((mazeX * Constants::TileSize) - camera.x, (mazeY * Constants::TileSize) - camera.y, Images::Blocks, idx);
             }
 
         }
@@ -121,20 +123,21 @@ void drawMaze_Small(uint8_t levelToRender) {
                 else if (maze.isWall(levelToRender, mazeX, mazeY)) {
 
                     if (isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                         { idx = 5;  } 
-                    else if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                     { idx = 20; } 
                     else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                     { idx = 21; } 
-                    else if (isWallXMY && !isWallXPY && !isWallXYM && !isWallXYP)                   { idx = 2;  } 
-                    else if (!isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                   { idx = 4;  } 
-                    else if (!isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                    { idx = 6;  }  // Updwards
-                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                     { idx = 22; } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                     { idx = 20; } 
+                    else if (isWallXMY && isWallXPY && isWallXYM && isWallXYP)                      { idx = 7;  }  // 4 corners
                     else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                     { idx = 23; } 
+                    else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                    { idx = 27; } 
+                    else if (isWallXMY && !isWallXPY && !isWallXYM && !isWallXYP)                   { idx = 2;  } 
+                    else if (isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                    { idx = 25; } 
+
+                    else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                     { idx = 22; } 
+                    else if (!isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                    { idx = 26; } 
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && !isWallXYP)                   { idx = 4;  } 
+                    else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                    { idx = 24; } 
+                    else if (!isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                    { idx = 6;  }  // Updwards
                     else if (!isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                   { idx = 3;  } 
                     else if (!isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                   { idx = 1;  } 
-                    else if (isWallXMY && isWallXPY && isWallXYM && isWallXYP)                      { idx = 7;  }  // 4 corners
-                    else if (!isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                    { idx = 24; } 
-                    else if (isWallXMY && !isWallXPY && !isWallXYM && isWallXYP)                    { idx = 25; } 
-                    else if (!isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                    { idx = 26; } 
-                    else if (isWallXMY && !isWallXPY && isWallXYM && !isWallXYP)                    { idx = 27; } 
                     else if (maze.isWall(levelToRender, mazeX, mazeY))                              { idx = 0;  }
 
                 }
@@ -166,7 +169,7 @@ void drawChests(uint8_t level) {
         Item &chest = maze.getChest(i);
 
         if (chest.level == level && chest.isActive()) {
-            Sprites::drawSelfMasked((chest.x * tileSize) - camera.x, (chest.y * tileSize) - camera.y, Images::Chest, 0);
+            Sprites::drawSelfMasked((chest.x * Constants::TileSize) - camera.x, (chest.y * Constants::TileSize) - camera.y, Images::Chest, 0);
         }
 
     }
@@ -486,7 +489,7 @@ void drawBullet() {
                     
             }
 
-            if (!maze.isWalkable(level, bullet.x  / tileSize, bullet.y / tileSize)) {
+            if (!maze.isWalkable(level, bullet.x  / Constants::TileSize, bullet.y / Constants::TileSize)) {
 
                 bullet.reset();
                 

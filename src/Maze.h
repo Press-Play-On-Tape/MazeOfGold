@@ -322,8 +322,8 @@ class Maze {
 
                 Enemy &enemy = enemies[i];
                 enemy.level = level;
-                enemy.x = x * tileSize;
-                enemy.y = y * tileSize;
+                enemy.x = x * Constants::TileSize;
+                enemy.y = y * Constants::TileSize;
                 enemy.vx = 0;
                 enemy.vy = 0;
                 enemy.lastX = enemy.x;
@@ -348,12 +348,12 @@ class Maze {
                 //     item.level = level;
 
                 //     if (this->getCell(level, 1, 2) == CellTypes::Empty) {
-                //         item.x = 1 * tileSize;
-                //         item.y = 2 * tileSize;
+                //         item.x = 1 * Constants::TileSize;
+                //         item.y = 2 * Constants::TileSize;
                 //     }
                 //     else {
-                //         item.x = 2 * tileSize;
-                //         item.y = 1 * tileSize;
+                //         item.x = 2 * Constants::TileSize;
+                //         item.y = 1 * Constants::TileSize;
                 //     }
 
                 //     item.itemType = ItemType::Candle;
@@ -417,8 +417,8 @@ class Maze {
 
                 Item &item = this->items[i];
                 item.level = level;
-                item.x = x * tileSize;
-                item.y = y * tileSize;
+                item.x = x * Constants::TileSize;
+                item.y = y * Constants::TileSize;
                 item.itemType = rnd;
             
             }

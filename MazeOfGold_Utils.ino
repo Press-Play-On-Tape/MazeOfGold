@@ -12,12 +12,12 @@ void updateEnemys(uint8_t level) {
 
         if (!enemy.isActive()) continue;
 
-        if ((enemy.x % tileSize == 0) && (enemy.y % tileSize == 0)) {
+        if ((enemy.x % Constants::TileSize == 0) && (enemy.y % Constants::TileSize == 0)) {
 
-            int testX = enemy.x + (Constants::DirectionOffsetX[enemy.dir] * tileSize);
-            int testY = enemy.y + (Constants::DirectionOffsetY[enemy.dir] * tileSize);
+            int testX = enemy.x + (Constants::DirectionOffsetX[enemy.dir] * Constants::TileSize);
+            int testY = enemy.y + (Constants::DirectionOffsetY[enemy.dir] * Constants::TileSize);
 
-            bool forwardClear = (maze.getCell(enemy.level, testX / tileSize, testY / tileSize) == CellTypes::Empty);
+            bool forwardClear = (maze.getCell(enemy.level, testX / Constants::TileSize, testY / Constants::TileSize) == CellTypes::Empty);
             bool wantTurn = (random(100) < 20);
 
             if (!forwardClear || wantTurn) {
@@ -35,10 +35,10 @@ void updateEnemys(uint8_t level) {
                 for (int d = 0; d < 2; d++) {
 
                     int newDir = dirs[d];
-                    int newX = enemy.x + (Constants::DirectionOffsetX[newDir] * tileSize);
-                    int newY = enemy.y + (Constants::DirectionOffsetY[newDir] * tileSize);
+                    int newX = enemy.x + (Constants::DirectionOffsetX[newDir] * Constants::TileSize);
+                    int newY = enemy.y + (Constants::DirectionOffsetY[newDir] * Constants::TileSize);
 
-                    if (maze.getCell(enemy.level, newX / tileSize, newY / tileSize) == CellTypes::Empty) {
+                    if (maze.getCell(enemy.level, newX / Constants::TileSize, newY / Constants::TileSize) == CellTypes::Empty) {
 
                         if (!(newX == enemy.lastX && newY == enemy.lastY)) {
 
@@ -127,8 +127,8 @@ void checkCollisions(uint8_t level) {
 
         if (chest.level != level) continue;
 
-        chestRect.x = chest.x * tileSize;
-        chestRect.y = chest.y * tileSize;
+        chestRect.x = chest.x * Constants::TileSize;
+        chestRect.y = chest.y * Constants::TileSize;
         chestRect.width = 12;
         chestRect.height = 12;
 
@@ -300,8 +300,8 @@ void checkCollisions(uint8_t level) {
 
 void updatePlayer() {
 
-	uint8_t tileX = player.x / tileSize;
-	uint8_t tileY = player.y / tileSize;
+	uint8_t tileX = player.x / Constants::TileSize;
+	uint8_t tileY = player.y / Constants::TileSize;
 
     if (player.isDead()) return;
 
@@ -374,7 +374,7 @@ void updatePlayer() {
 
     }
 
-    if (player.vx == 0 && player.vy == 0 && player.x % tileSize == 0 && player.y % tileSize == 0) {
+    if (player.vx == 0 && player.vy == 0 && player.x % Constants::TileSize == 0 && player.y % Constants::TileSize == 0) {
 
         if (arduboy.pressed(LEFT_BUTTON) && maze.isWalkable(level, tileX - 1, tileY)) {
             player.vx = -2;
@@ -424,20 +424,20 @@ void updatePlayer() {
 
     bool stop = false;
 
-    if (player.vx != 0 && player.x % tileSize == 0) { 
+    if (player.vx != 0 && player.x % Constants::TileSize == 0) { 
         player.vx = 0;
         stop = true;
     }
 
-    if (player.vy != 0 && player.y % tileSize == 0) {
+    if (player.vy != 0 && player.y % Constants::TileSize == 0) {
         player.vy = 0;
         stop = true;
     }
 
     if (stop) {
 
-        tileX = player.x / tileSize;
-        tileY = player.y / tileSize;
+        tileX = player.x / Constants::TileSize;
+        tileY = player.y / Constants::TileSize;
 
         if (maze.getCell(level, tileX, tileY) == CellTypes::Stairs) {
 
@@ -454,14 +454,14 @@ void updatePlayer() {
 
 void updateCamera() {
 
-	camera.x = player.x  - (WIDTH / 2) + (tileSize / 2);
-	camera.y = player.y  - (HEIGHT / 2) + (tileSize / 2);
+	camera.x = player.x  - (WIDTH / 2) + (Constants::TileSize / 2);
+	camera.y = player.y  - (HEIGHT / 2) + (Constants::TileSize / 2);
 
 	if (camera.x < 0) camera.x = 0;
 	if (camera.y < 0) camera.y = 0;
 
-	int maxCameraX = Constants::MazeWidth * tileSize - WIDTH;
-	int maxCameraY = Constants::MazeHeight * tileSize - HEIGHT;
+	int maxCameraX = Constants::MazeWidth * Constants::TileSize - WIDTH;
+	int maxCameraY = Constants::MazeHeight * Constants::TileSize - HEIGHT;
 
 	if (camera.x > maxCameraX) camera.x = maxCameraX;
 	if (camera.y > maxCameraY) camera.y = maxCameraY;

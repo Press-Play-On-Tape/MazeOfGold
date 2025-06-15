@@ -78,6 +78,9 @@ void handleMenu() {
 
     if (arduboy.justPressed(A_BUTTON) && menu.x == 128 - 22) {
 
+        uint8_t playerX = player.x / Constants::TileSize;
+        uint8_t playerY = player.y / Constants::TileSize;
+
         switch (player.getInventoryItem(menu.y)) {
         
             case ItemType::Map:
@@ -140,33 +143,33 @@ void handleMenu() {
 
             case ItemType::Key:
                 
-                if (maze.getCell(level, (player.x / tileSize) - 1, (player.y / tileSize)) == CellTypes::GateClosed) {
+                if (maze.getCell(level, playerX - 1, playerY) == CellTypes::GateClosed) {
 
-                    maze.setCell(level, (player.x / tileSize) - 1, (player.y / tileSize), CellTypes::GateOpen);
+                    maze.setCell(level, playerX - 1, playerY, CellTypes::GateOpen);
                     player.removeItem(menu.y);
                     menu.direction = MenuDirection::Closing;
                     handleMenu_MoveUp();
 
                 }
-                else if (maze.getCell(level, (player.x / tileSize) + 1, (player.y / tileSize)) == CellTypes::GateClosed) {
+                else if (maze.getCell(level, playerX + 1, playerY) == CellTypes::GateClosed) {
 
-                    maze.setCell(level, (player.x / tileSize) + 1, (player.y / tileSize), CellTypes::GateOpen);
+                    maze.setCell(level, playerX + 1, playerY, CellTypes::GateOpen);
                     player.removeItem(menu.y);
                     menu.direction = MenuDirection::Closing;
                     handleMenu_MoveUp();
 
                 }
-                else if (maze.getCell(level, (player.x / tileSize), (player.y / tileSize) - 1) == CellTypes::GateClosed) {
+                else if (maze.getCell(level, playerX, playerY - 1) == CellTypes::GateClosed) {
 
-                    maze.setCell(level, (player.x / tileSize), (player.y / tileSize) - 1, CellTypes::GateOpen);
+                    maze.setCell(level, playerX, playerY - 1, CellTypes::GateOpen);
                     player.removeItem(menu.y);
                     menu.direction = MenuDirection::Closing;
                     handleMenu_MoveUp();
 
                 }
-                else if (maze.getCell(level, (player.x / tileSize), (player.y / tileSize) + 1) == CellTypes::GateClosed) {
+                else if (maze.getCell(level, playerX, playerY + 1) == CellTypes::GateClosed) {
 
-                    maze.setCell(level, (player.x / tileSize), (player.y / tileSize) + 1, CellTypes::GateOpen);
+                    maze.setCell(level, playerX, playerY + 1, CellTypes::GateOpen);
                     player.removeItem(menu.y);
                     menu.direction = MenuDirection::Closing;
                     handleMenu_MoveUp();
