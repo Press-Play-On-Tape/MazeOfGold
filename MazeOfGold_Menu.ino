@@ -52,13 +52,8 @@ void handleMenu_MoveDown() {
 void handleMenu() {
 
     updateCamera();
-
-    if (arduboy.frameCount % 2 == 0) {  // enemies move slower
-        updateEnemys(level);
-    }
-
+    updateEnemys(level);
     checkCollisions(level);
-
     drawMaze(level);
     drawChests(level);
     drawEnemies(level);
@@ -194,10 +189,7 @@ void handleMenu() {
 
 void handleMenu_ShowMap() {
 
-    if (arduboy.frameCount % 2 == 0) {  // enemies move slower
-        updateEnemys(level);
-    }
-
+    updateEnemys(level);
     checkCollisions(level);
     drawMaze_Small(mapLevel);
     drawChests_Small(mapLevel);
@@ -312,13 +304,13 @@ void drawMenu() {
 
 void drawChestCount(int8_t x, uint8_t y) {
 
-    if (darkMode) {
+    if (darkMode && gameState != GameState::Map) {
 
     }
     else {
 
         arduboy.fillRect(x - 1, y - 1, 17, 14, BLACK);
-        Sprites::drawExternalMask(x, y, Images::Score, Images::Score_Mask, maze.getActiveChests() - 1, 0);
+        Sprites::drawExternalMask(x, y, Images::Score, Images::Score_Mask, 10 - maze.getActiveChests(), 0);
 
     }
     

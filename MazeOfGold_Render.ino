@@ -282,7 +282,7 @@ void drawEnemies(uint8_t level) {
             if (enemy.x - camera.x >= -12 && enemy.x - camera.x < 128 && enemy.y - camera.y > -12 && enemy.y - camera.y < 64) {
 
                 uint8_t idx = enemy.dir * 2 + (((enemy.x + enemy.y) % 8) < 4);
-                Sprites::drawSelfMasked(enemy.x - camera.x, enemy.y - camera.y, Images::Enemy_Img, idx);
+                Sprites::drawExternalMask(enemy.x - camera.x, enemy.y - camera.y, Images::Enemy_Img, Images::Enemy_Mask, idx, idx);
 
             }
 
@@ -564,6 +564,6 @@ void drawFlashlight() {
 
     }
 
-    Sprites::drawErase(player.x - camera.x - 32, player.y - camera.y - 28, Images::CircleOfLight, 0);
+    Sprites::drawErase(player.x - camera.x - 32, player.y - camera.y - 28, Images::CircleOfLight, (arduboy.frameCount / 2) % 2);
 
 }

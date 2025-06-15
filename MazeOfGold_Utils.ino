@@ -4,6 +4,8 @@
 
 void updateEnemys(uint8_t level) {
 
+    if (arduboy.frameCount % 2 == 1) { return; }
+
     for (int i = 0; i < Constants::MaxEnemys; i++) {
 
         Enemy &enemy = maze.getEnemy(i);

@@ -16,7 +16,6 @@ Arduboy2 arduboy;
 Point camera = { 0, 0 };
 Point camera_Small = { 0, 0 };
 
-uint8_t clearedLevel;
 
 Maze maze;
 Menu menu;
@@ -27,6 +26,7 @@ Item bullet;
 
 GameState gameState = GameState::PPOT_Init;
 
+uint8_t clearedLevel = 0;
 uint8_t level = 0;
 uint8_t mapLevel = 0;
 uint8_t showEnemyCursors = 0;
@@ -36,8 +36,8 @@ uint8_t enableMaps = 0;
 uint8_t menuCursor = 0;
 
 bool darkMode = false;
-uint16_t darkModeCounter = 0;
-// uint8_t usingCandle = 0;
+int16_t darkModeCounter = -256;
+
 
 void setup() {
 
@@ -53,47 +53,6 @@ void loop() {
 
 	arduboy.pollButtons();
 	arduboy.clear();
-
-
-	if (gameState == GameState::GamePlay && darkModeCounter == 0  && arduboy.frameCount > 512 && random(512) == 0) {
-		darkModeCounter = 512;
-	}
-
-	switch (darkModeCounter) {
-
-		case 512:
-		case 510:
-		case 508:
-		case 505:
-
-		case 10:
-		case 7:
-		case 5:
-			arduboy.invert(true);
-			darkModeCounter--;
-			break;
-
-		case 2:
-			arduboy.invert(true);
-			darkModeCounter--;
-			darkMode = false;
-			break;
-
-		case 502:
-			arduboy.invert(true);
-			darkModeCounter--;
-			darkMode = true;
-			break;
-
-		case 0:
-			break;
-
-		default:
-			arduboy.invert(false);
-			darkModeCounter--;
-			break;
-
-	}
 
 	switch (gameState) {
 	
@@ -159,7 +118,7 @@ void loop() {
 				arduboy.frameCount = 0;
 				maze.setEnemyCount(2);
 
-				clearedLevel = 1;
+				clearedLevel = 0;
 				startGame(true);
 
 			}	
@@ -167,15 +126,11 @@ void loop() {
 
 		case GameState::GamePlay:
 
+			handleDarkMode();
 			updatePlayer();
 			updateCamera();
-
-			if (arduboy.frameCount % 2 == 0) {  // enemies move slower
-				updateEnemys(level);
-			}
-
+			updateEnemys(level);
 			checkCollisions(level);
-
 			drawMaze(level);
 			drawChests(level);
 			drawEnemies(level);
@@ -207,6 +162,9 @@ void loop() {
 			break;
 
 		case GameState::GameOver:
+			darkMode = false;
+			darkModeCounter = -256;
+
 			drawMaze(level);
 			drawChests(level);
 			drawEnemies(level);
@@ -268,6 +226,50 @@ void startGame(bool clearInventory) {
 	displayChests = 0;
 	arduboy.frameCount == 0;
 	darkMode = false;
-	darkModeCounter = 0;
+	darkModeCounter = -256;
+
+}
+
+void handleDarkMode() {
+
+	if (darkModeCounter == -256 && arduboy.frameCount > 512 && (level == 1 || clearedLevel > 1) && random(512) == 0) {
+		darkModeCounter = 312;
+	}
+
+	switch (darkModeCounter) {
+
+		case 312:
+		case 310:
+		case 308:
+		case 305:
+
+		case 10:
+		case 7:
+		case 5:
+			arduboy.invert(true);
+			darkModeCounter--;
+			break;
+
+		case 302:
+			arduboy.invert(true);
+			darkModeCounter--;
+			darkMode = true;
+			break;
+
+		case 2:
+			arduboy.invert(true);
+			darkModeCounter--;
+			darkMode = false;
+			break;
+
+		case -256:
+			break;
+
+		default:
+			arduboy.invert(false);
+			darkModeCounter--;
+			break;
+
+	}
 
 }

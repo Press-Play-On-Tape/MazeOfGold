@@ -374,19 +374,20 @@ class Maze {
 
                 ItemType rnd = ItemType::None;
 
-                bool hasBomb = player.getItemIdx(ItemType::Bomb) != Constants::NoItem;
-                bool hasGun = player.getItemIdx(ItemType::Gun) != Constants::NoItem;
+                bool hasBomb        = player.getItemIdx(ItemType::Bomb)     != Constants::NoItem;
+                bool hasGun         = player.getItemIdx(ItemType::Gun)      != Constants::NoItem;
+                bool hasCandle      = player.getItemIdx(ItemType::Candle)   != Constants::NoItem;
 
-                if (exitType == 0 || iLow > 0) {
+                if (exitType == 0 || i > 0) {
 
-                    uint8_t maxRnd = (hasBomb && hasGun ? 6 : 2);
+                    uint8_t maxRnd = ((hasBomb && hasGun && hasCandle) ? 4 : 2);
                     maxRnd = random(0, maxRnd);      
 
                     if (maxRnd == 0) {
 
                         if (!hasGun && hasBomb) {
 
-                            rnd = random(0, 2) == 0 ? ItemType::Gun : ItemType::Bullets;
+                            rnd = random(0, 2) == 0 ? ItemType::Gun : ItemType::Candle;
 
                         }
                         else if (hasGun && !hasBomb) {
@@ -394,9 +395,9 @@ class Maze {
                             rnd = random(0, 2) == 0 ? ItemType::Bomb : ItemType::Bullets;
 
                         }
-                        else if (hasGun && hasBomb) {
+                        else if (hasGun && hasBomb && !hasCandle) {
 
-                            rnd = random(0, 2) == 0 ? ItemType::Bomb : ItemType::Bullets;
+                            rnd = random(0, 2) == 0 ? ItemType::Candle : ItemType::Bullets;
 
                         }
                         else {
@@ -409,7 +410,7 @@ class Maze {
 
                 }
                 else {
-                
+   
                     rnd = ItemType::Key;
 
                 }
@@ -531,8 +532,8 @@ class Maze {
             this->clearEnemys();
             this->spawnEnemys(0, 0, this->getEnemyCount());
             this->spawnEnemys(1, 6, 6 + this->getEnemyCount());
-            this->spawnItems(player, exitType, 0, 0, 1);
-            this->spawnItems(player, exitType, 1, 1, 2);                
+            this->spawnItems(player, exitType, 0, 0, 3);
+            this->spawnItems(player, exitType, 1, 3, 6);                
 
         }
 

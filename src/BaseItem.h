@@ -6,6 +6,7 @@
 class BaseItem {
     
     public:
+    
         uint8_t level;
         int16_t x;
         int16_t y;
