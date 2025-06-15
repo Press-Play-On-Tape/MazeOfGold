@@ -6,7 +6,7 @@ void updateEnemys(uint8_t level) {
 
     if (arduboy.frameCount % 2 == 1) { return; }
 
-    for (int i = 0; i < Constants::MaxEnemys; i++) {
+    for (uint8_t i = 0; i < Constants::MaxEnemys; i++) {
 
         Enemy &enemy = maze.getEnemy(i);
 
@@ -14,29 +14,29 @@ void updateEnemys(uint8_t level) {
 
         if ((enemy.x % Constants::TileSize == 0) && (enemy.y % Constants::TileSize == 0)) {
 
-            int testX = enemy.x + (Constants::DirectionOffsetX[enemy.dir] * Constants::TileSize);
-            int testY = enemy.y + (Constants::DirectionOffsetY[enemy.dir] * Constants::TileSize);
+            int16_t testX = enemy.x + (Constants::DirectionOffsetX[enemy.dir] * Constants::TileSize);
+            int16_t testY = enemy.y + (Constants::DirectionOffsetY[enemy.dir] * Constants::TileSize);
 
             bool forwardClear = (maze.getCell(enemy.level, testX / Constants::TileSize, testY / Constants::TileSize) == CellTypes::Empty);
             bool wantTurn = (random(100) < 20);
 
             if (!forwardClear || wantTurn) {
 
-                int dirs[2] = {(enemy.dir + 1) % 4, (enemy.dir + 3) % 4};
+                uint8_t dirs[2] = {(enemy.dir + 1) % 4, (enemy.dir + 3) % 4};
 
                 if (random(2) == 0) {
-                    int temp = dirs[0];
+                    uint8_t temp = dirs[0];
                     dirs[0] = dirs[1];
                     dirs[1] = temp;
                 }
 
                 bool moved = false;
 
-                for (int d = 0; d < 2; d++) {
+                for (uint8_t d = 0; d < 2; d++) {
 
-                    int newDir = dirs[d];
-                    int newX = enemy.x + (Constants::DirectionOffsetX[newDir] * Constants::TileSize);
-                    int newY = enemy.y + (Constants::DirectionOffsetY[newDir] * Constants::TileSize);
+                    uint8_t newDir = dirs[d];
+                    uint16_t newX = enemy.x + (Constants::DirectionOffsetX[newDir] * Constants::TileSize);
+                    uint16_t newY = enemy.y + (Constants::DirectionOffsetY[newDir] * Constants::TileSize);
 
                     if (maze.getCell(enemy.level, newX / Constants::TileSize, newY / Constants::TileSize) == CellTypes::Empty) {
 
@@ -98,8 +98,8 @@ void updateEnemys(uint8_t level) {
 
             // Continue movement ..
 
-            int forwardX = enemy.x + (Constants::DirectionOffsetX[enemy.dir] * 2);
-            int forwardY = enemy.y + (Constants::DirectionOffsetY[enemy.dir] * 2);
+            uint16_t forwardX = enemy.x + (Constants::DirectionOffsetX[enemy.dir] * 2);
+            uint16_t forwardY = enemy.y + (Constants::DirectionOffsetY[enemy.dir] * 2);
 
             enemy.lastX = enemy.x;
             enemy.lastY = enemy.y;
@@ -120,7 +120,7 @@ void checkCollisions(uint8_t level) {
     playerRect.width = 10;
     playerRect.height = 12;
 
-    for (int i = 0; i < Constants::MaxChests; i++) {
+    for (uint8_t i = 0; i < Constants::MaxChests; i++) {
 
         Item &chest = maze.getChest(i);
         Rect chestRect;
@@ -153,7 +153,7 @@ void checkCollisions(uint8_t level) {
     }
 
 
-    for (int i = 0; i < Constants::MaxEnemys; i++) {
+    for (uint8_t i = 0; i < Constants::MaxEnemys; i++) {
 
         Enemy &enemy = maze.getEnemy(i);
         Rect enemyRect;
@@ -191,9 +191,10 @@ void checkCollisions(uint8_t level) {
             bullet.reset();
 
         }
+
     }
 
-    for (int i = 0; i < Constants::MaxItems; i++) {
+    for (uint8_t i = 0; i < Constants::MaxItems; i++) {
 
         Item &item = maze.getItem(i);
         Rect itemRect;
@@ -265,7 +266,7 @@ void checkCollisions(uint8_t level) {
         }
         else {
             
-            for (int i = 0; i < Constants::MaxEnemys; i++) {
+            for (uint8_t i = 0; i < Constants::MaxEnemys; i++) {
 
                 Enemy &enemy = maze.getEnemy(i);
                 Rect enemyRect;
@@ -460,8 +461,8 @@ void updateCamera() {
 	if (camera.x < 0) camera.x = 0;
 	if (camera.y < 0) camera.y = 0;
 
-	int maxCameraX = Constants::MazeWidth * Constants::TileSize - WIDTH;
-	int maxCameraY = Constants::MazeHeight * Constants::TileSize - HEIGHT;
+	int16_t maxCameraX = Constants::MazeWidth * Constants::TileSize - WIDTH;
+	int16_t maxCameraY = Constants::MazeHeight * Constants::TileSize - HEIGHT;
 
 	if (camera.x > maxCameraX) camera.x = maxCameraX;
 	if (camera.y > maxCameraY) camera.y = maxCameraY;

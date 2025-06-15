@@ -12,6 +12,12 @@ enum CellTypes : uint8_t {
     GateOpen,
 };
 
+enum ExitType : uint8_t {
+    None,
+    BottomLeft,
+    TopRight,
+    BottomRight,
+};
 
 enum class MenuDirection : uint8_t {
     None,
@@ -20,7 +26,6 @@ enum class MenuDirection : uint8_t {
 };
 
 enum class GameState : uint8_t {
-    PPOT_Init,
     PPOT,
     Menu_Init,
     Menu,

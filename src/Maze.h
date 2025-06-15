@@ -18,14 +18,14 @@ class Maze {
 
     private:
 
-        void push(uint8_t *stack, int &stackSize, int x, int y) {
+        void push(uint8_t *stack, uint8_t &stackSize, uint8_t x, uint8_t y) {
 
             stack[stackSize++] = x;
             stack[stackSize++] = y;
 
         }
 
-        void pop(uint8_t *stack, int &stackSize, int &x, int &y) {
+        void pop(uint8_t *stack, uint8_t &stackSize, uint8_t &x, uint8_t &y) {
 
             stackSize -= 2;
             x = stack[stackSize];
@@ -58,8 +58,8 @@ class Maze {
 
         void generateMaze_Clear() {
 
-            for (int y = 0; y < Constants::MazeHeight; y++) {
-                for (int x = 0; x < Constants::MazeWidth; x++) {
+            for (uint8_t y = 0; y < Constants::MazeHeight; y++) {
+                for (uint8_t x = 0; x < Constants::MazeWidth; x++) {
                     maze[y][x] = 16 + 1; 
                 }
             }
@@ -70,23 +70,23 @@ class Maze {
 
             memset(buffer, 0, 1024);
 
-            int x = 1;
-            int y = 1;
+            uint8_t x = 1;
+            uint8_t y = 1;
             this->setCell(level, x, y, CellTypes::Empty);
 
-            if (exitType == 1) {
+            if (exitType == ExitType::BottomLeft) {
                 this->setCell(level, 1, 21, CellTypes::Empty);
                 this->setCell(level, 2, 21, CellTypes::Empty);
                 this->setCell(level, 3, 21, CellTypes::Empty);
                 this->setCell(level, 4, 21, CellTypes::Empty);
             }
-            else if (exitType == 2) {
+            else if (exitType == ExitType::TopRight) {
                 this->setCell(level, 18, 1, CellTypes::Empty);
                 this->setCell(level, 19, 1, CellTypes::Empty);
                 this->setCell(level, 20, 1, CellTypes::Empty);
                 this->setCell(level, 21, 1, CellTypes::Empty);
             }
-            else if (exitType == 3) {
+            else if (exitType == ExitType::BottomRight) {
                 this->setCell(level, 21, 18, CellTypes::Empty);
                 this->setCell(level, 21, 19, CellTypes::Empty);
                 this->setCell(level, 21, 20, CellTypes::Empty);
@@ -94,20 +94,20 @@ class Maze {
             }
 
             uint8_t *stack = buffer;
-            int stackSize = 0;
+            uint8_t stackSize = 0;
 
             push(stack, stackSize, x, y);
 
             while (stackSize > 0) {
                 
                 pop(stack, stackSize, x, y);
-                int neighbors[4];
-                int nCount = 0;
+                uint8_t neighbors[4];
+                uint8_t nCount = 0;
 
-                for (int dir = 0; dir < 4; dir++) {
+                for (uint8_t dir = 0; dir < 4; dir++) {
 
-                    int nx = x + Constants::DirectionOffsetX[dir] * 2;
-                    int ny = y + Constants::DirectionOffsetY[dir] * 2;
+                    uint8_t nx = x + Constants::DirectionOffsetX[dir] * 2;
+                    uint8_t ny = y + Constants::DirectionOffsetY[dir] * 2;
 
                     if (nx > 0 && ny > 0 && nx < Constants::MazeWidth && ny < Constants::MazeHeight) {
                                     
@@ -123,9 +123,9 @@ class Maze {
 
                     push(stack, stackSize, x, y);
 
-                    int dir = neighbors[random(nCount)];
-                    int nx = x + Constants::DirectionOffsetX[dir] * 2;
-                    int ny = y + Constants::DirectionOffsetY[dir] * 2;
+                    uint8_t dir = neighbors[random(nCount)];
+                    uint8_t nx = x + Constants::DirectionOffsetX[dir] * 2;
+                    uint8_t ny = y + Constants::DirectionOffsetY[dir] * 2;
 
                     this->setCell(level, x + Constants::DirectionOffsetX[dir], y + Constants::DirectionOffsetY[dir], 0);	// remove wall
                     this->setCell(level, nx, ny, 0);
@@ -160,9 +160,9 @@ class Maze {
 
                        ) {
 
-                        if (exitType == 1 && x <= 4 && y == 20 )            { /* Do nothing */ }
-                        else if (exitType == 2 && x >= 18 && y == 2)        { /* Do nothing */ }
-                        else if (exitType == 3 && x == 20 && y >= 18)       { /* Do nothing */ }
+                        if (exitType == ExitType::BottomLeft && x <= 4 && y == 20 )            { /* Do nothing */ }
+                        else if (exitType == ExitType::TopRight && x >= 18 && y == 2)          { /* Do nothing */ }
+                        else if (exitType == ExitType::BottomRight && x == 20 && y >= 18)      { /* Do nothing */ }
                         else {
 
                             this->setCell(level, x, y, CellTypes::Empty);
@@ -177,17 +177,17 @@ class Maze {
             }
 
 
-            if (exitType == 1 && level == 0) {
+            if (exitType == ExitType::BottomLeft && level == 0) {
 
                 this->setCell(level, 3, 21, CellTypes::GateClosed);
 
             }
-            else if (exitType == 2 && level == 0) {
+            else if (exitType == ExitType::TopRight && level == 0) {
 
                 this->setCell(level, 19, 1, CellTypes::GateClosed);
 
             }
-            else if (exitType == 3 && level == 0) {
+            else if (exitType == ExitType::BottomRight && level == 0) {
 
                 this->setCell(level, 21, 19, CellTypes::GateClosed);
 
@@ -199,11 +199,11 @@ class Maze {
         
             uint8_t stairsPlaced = 0;
 
-            if (exitType == 0) {
+            if (exitType == ExitType::None) {
 
-                for (int y = 1; y < Constants::MazeHeight - 1; y++) {
+                for (uint8_t y = 1; y < Constants::MazeHeight - 1; y++) {
 
-                    for (int x = 1; x < Constants::MazeWidth - 1; x++) {
+                    for (uint8_t x = 1; x < Constants::MazeWidth - 1; x++) {
 
                         if (x == 1 && y == 1) { continue;}
 
@@ -234,21 +234,21 @@ class Maze {
                 }
 
             }
-            else if (exitType == 1) {
+            else if (exitType == ExitType::BottomLeft) {
 
                 this->setCell(0, 1, 21, CellTypes::Stairs);
                 this->setCell(1, 1, 21, CellTypes::Stairs);
                 stairsPlaced++;          
 
             }
-            else if (exitType == 2) {
+            else if (exitType == ExitType::TopRight) {
 
                 this->setCell(0, 21, 1, CellTypes::Stairs);
                 this->setCell(1, 21, 1, CellTypes::Stairs);
                 stairsPlaced++;          
 
             }
-            else if (exitType == 3) {
+            else if (exitType == ExitType::BottomRight) {
 
                 this->setCell(0, 21, 21, CellTypes::Stairs);
                 this->setCell(1, 21, 21, CellTypes::Stairs);
@@ -265,7 +265,7 @@ class Maze {
 
             for (uint8_t i = iLow; i <= iHigh; i++) {
 
-                int x, y;
+                uint8_t x, y;
                 
                 do {
 
@@ -296,7 +296,7 @@ class Maze {
 
         void clearEnemys() {
 
-            for (int i = 0; i < Constants::MaxEnemys; i++) {
+            for (uint8_t i = 0; i < Constants::MaxEnemys; i++) {
 
                 Enemy &enemy = enemies[i];
                 enemy.x = 0;
@@ -311,7 +311,7 @@ class Maze {
 
             for (uint8_t i = iLow; i < iHigh; i++) {
 
-                int x, y;
+                uint8_t x, y;
 
                 do {
                 
@@ -338,7 +338,7 @@ class Maze {
 
             for (uint8_t i = iLow; i < iHigh; i++) {
 
-                int x, y;
+                uint8_t x, y;
 
                 // Place an object immediately beside the player ..
 
@@ -367,9 +367,9 @@ class Maze {
                     y = random(5, Constants::MazeHeight - 1);
 
                 } while (this->getCell(level, x, y) != CellTypes::Empty ||
-                         (exitType == 1 && x == 2 && y == 21) ||
-                         (exitType == 2 && x == 20 && y == 1) ||
-                         (exitType == 3 && x == 21 && y == 20));
+                         (exitType == ExitType::BottomLeft  && x == 2  && y == 21) ||
+                         (exitType == ExitType::TopRight    && x == 20 && y == 1) ||
+                         (exitType == ExitType::BottomRight && x == 21 && y == 20));
                 
 
                 ItemType rnd = ItemType::None;
@@ -378,7 +378,7 @@ class Maze {
                 bool hasGun         = player.getItemIdx(ItemType::Gun)      != Constants::NoItem;
                 bool hasCandle      = player.getItemIdx(ItemType::Candle)   != Constants::NoItem;
 
-                if (exitType == 0 || i > 0) {
+                if (exitType == ExitType::None || i > 0) {
 
                     uint8_t maxRnd = ((hasBomb && hasGun && hasCandle) ? 4 : 2);
                     maxRnd = random(0, maxRnd);      
@@ -443,7 +443,7 @@ class Maze {
 
         void setCell(uint8_t level, uint8_t x, uint8_t y, uint8_t value) {
         
-            int byteIndex = (x + (level == 1 ? Constants::MazeWidth : 0)) / 2;
+            uint8_t byteIndex = (x + (level == 1 ? Constants::MazeWidth : 0)) / 2;
 
             if (x % 2 == 0) {
                 maze[y][byteIndex] = (maze[y][byteIndex] & 0x0F) | (value << 4);
@@ -514,8 +514,8 @@ class Maze {
             uint8_t stairsPlaced = 0;
             uint8_t exitType = random(0, 8);
 
-            if (exitType != 1 && exitType != 2 && exitType !=3) {
-                exitType = 0;
+            if (exitType != ExitType::BottomLeft && exitType != ExitType::TopRight && exitType != ExitType::BottomRight) {
+                exitType = ExitType::None;
             }
 
             while (stairsPlaced < 1) {

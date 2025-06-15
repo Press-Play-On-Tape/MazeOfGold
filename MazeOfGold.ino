@@ -24,7 +24,7 @@ Item puff;
 Item death;
 Item bullet;
 
-GameState gameState = GameState::PPOT_Init;
+GameState gameState = GameState::PPOT;
 
 uint8_t clearedLevel = 0;
 uint8_t level = 0;
@@ -55,10 +55,6 @@ void loop() {
 	arduboy.clear();
 
 	switch (gameState) {
-	
-		case GameState::PPOT_Init:
-			splashScreen_Init();
-			[[fallthrough]]
 
 		case GameState::PPOT:
 			splashScreen();

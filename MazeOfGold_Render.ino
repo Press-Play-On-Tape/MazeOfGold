@@ -144,8 +144,8 @@ void drawMaze_Small(uint8_t levelToRender) {
                 else if (maze.getCell(level, mazeX, mazeY) == CellTypes::Stairs) {
 
                     if (isWallXMY && isWallXPY && isWallXYM && !isWallXYP)                          { idx = 28; }
-                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                     { idx = 29; }
                     else if (isWallXMY && !isWallXPY && isWallXYM && isWallXYP)                     { idx = 30; }
+                    else if (isWallXMY && isWallXPY && !isWallXYM && isWallXYP)                     { idx = 29; }
                     else if (!isWallXMY && isWallXPY && isWallXYM && isWallXYP)                     { idx = 31; }
 
                 }
@@ -164,7 +164,7 @@ void drawMaze_Small(uint8_t levelToRender) {
 
 void drawChests(uint8_t level) {
 
-    for (int i = 0; i < Constants::MaxChests; i++) {
+    for (uint8_t i = 0; i < Constants::MaxChests; i++) {
 
         Item &chest = maze.getChest(i);
 
@@ -180,7 +180,7 @@ void drawChests_Small(uint8_t levelToRender) {
 
     uint8_t idx = (arduboy.frameCount / 4) % 2;
 
-    for (int i = 0; i < Constants::MaxChests; i++) {
+    for (uint8_t i = 0; i < Constants::MaxChests; i++) {
 
         Item &chest = maze.getChest(i);
 
@@ -276,7 +276,7 @@ void drawDeath() {
 
 void drawEnemies(uint8_t level) {
 
-    for (int i = 0; i < Constants::MaxEnemys; i++) {
+    for (uint8_t i = 0; i < Constants::MaxEnemys; i++) {
 
         Enemy &enemy = maze.getEnemy(i);
 
@@ -373,7 +373,7 @@ void drawEnemies(uint8_t level) {
 
 void drawEnemies_Small(uint8_t levelToRender) {
 
-    for (int i = 0; i < Constants::MaxEnemys; i++) {
+    for (uint8_t i = 0; i < Constants::MaxEnemys; i++) {
 
         Enemy &enemy = maze.getEnemy(i);
 
@@ -388,7 +388,7 @@ void drawEnemies_Small(uint8_t levelToRender) {
  
 void drawItems(uint8_t level) {
 
-    for (int i = 0; i < Constants::MaxItems; i++) {
+    for (uint8_t i = 0; i < Constants::MaxItems; i++) {
 
         Item &item = maze.getItem(i);
 
