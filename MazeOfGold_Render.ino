@@ -199,7 +199,7 @@ void drawPlayer() {
 
         if (player.isHoldingGun()) {
 
-            Sprites::drawExternalMask(player.x - camera.x - 2, player.y - camera.y, Images::Player_Gun, Images::Player_Gun_Mask, 0, 0);
+            Sprites::drawExternalMask(player.x - camera.x - 2, player.y - camera.y, Images::Player_Gun, Images::Player_Gun_Mask, player.dir, player.dir);
 
             if (menu.direction == MenuDirection::None) {
                 Sprites::drawErase(0, 0, Images::MenuItema_Gun_Mask, 0);
@@ -569,4 +569,13 @@ void drawFlashlight() {
 
     Sprites::drawErase(player.x - camera.x - 32, player.y - camera.y - 28, Images::CircleOfLight, (arduboy.frameCount / 2) % 2);
 
+}
+
+void renderHighScore(uint16_t score) {
+
+    Sprites::drawSelfMasked(38, 48, Images::HighScore, 0);
+    Sprites::drawSelfMasked(79, 48, Images::HighScore_Numbers, score / 100);
+    Sprites::drawSelfMasked(83, 48, Images::HighScore_Numbers, score / 10 % 10);
+    Sprites::drawSelfMasked(87, 48, Images::HighScore_Numbers, score % 10 % 10);
+    
 }

@@ -40,8 +40,24 @@ void handleTitle() {
     Sprites::drawExternalMask(0, 22, Images::Title, Images::Title_Mask, 0, 0);
     
     if (arduboy.frameCount > 96) {
-        Sprites::drawOverwrite(33, 47, Images::Press_A_Mask, 0);
-        Sprites::drawSelfMasked(34, 48, Images::Press_A, 0);
+
+        if (arduboy.frameCount % 96 < 48) {
+
+            Sprites::drawOverwrite(33, 47, Images::Press_A_Mask, 0);
+            Sprites::drawOverwrite(62, 47, Images::Press_A_Mask, 0);
+            Sprites::drawSelfMasked(34, 48, Images::Press_A, 0);
+
+        }
+        else {
+
+            uint16_t score = EEPROM_Utils::getScore();
+
+            Sprites::drawOverwrite(37, 47, Images::Press_A_Mask, 0);
+            Sprites::drawOverwrite(60, 47, Images::Press_A_Mask, 0);
+            renderHighScore(score);
+
+        }
+
     }
 
     if (arduboy.justPressed(A_BUTTON)) {

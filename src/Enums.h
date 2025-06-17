@@ -35,6 +35,7 @@ enum class GameState : uint8_t {
     Map,
     GameOver,
     LevelUp,
+    HighScore,
 };
 
 enum class ItemType : uint8_t {

@@ -54,15 +54,18 @@ void handleMenu() {
     updateCamera();
     updateEnemys(level);
     checkCollisions(level);
-    drawMaze(level);
-    drawChests(level);
-    drawEnemies(level);
-    drawItems(level);
-    drawPlayer();
-    drawDeath();
+
+    // drawMaze(level);
+    // drawChests(level);
+    // drawEnemies(level);
+    // drawItems(level);
+    // drawPlayer();
+    // drawDeath();
+    // drawFlashlight();    
+    drawStuff();
     drawChestCount(106 - menu.x, 0);
-    drawFlashlight();    
     drawMenu();
+
 
     if (arduboy.justPressed(UP_BUTTON)) {
 

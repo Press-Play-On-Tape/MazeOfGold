@@ -66,21 +66,19 @@ void updateEnemys(uint8_t level) {
                     }
                 }
 
-                if (!moved && forwardClear) {
+                if (!moved) {
 
                     enemy.lastX = enemy.x;
                     enemy.lastY = enemy.y;
                     enemy.x += Constants::DirectionOffsetX[enemy.dir] * 2;
                     enemy.y += Constants::DirectionOffsetY[enemy.dir] * 2;
 
-                } 
-                else if (!moved) {
+                    if (!forwardClear) {
 
-                    enemy.dir = (enemy.dir + 2) % 4;
-                    enemy.lastX = enemy.x;
-                    enemy.lastY = enemy.y;
-                    enemy.x += Constants::DirectionOffsetX[enemy.dir] * 2;
-                    enemy.y += Constants::DirectionOffsetY[enemy.dir] * 2;
+                        enemy.dir = (enemy.dir + 2) % 4;
+    
+                    }
+
                 }
 
             } 
@@ -144,7 +142,7 @@ void checkCollisions(uint8_t level) {
             }
             else {
             
-                displayChests = 12;
+                displayChestsCounter = 12;
 
             }
         
@@ -308,23 +306,81 @@ void updatePlayer() {
 
     if (player.isHoldingGun()) {
 
-        if (arduboy.justPressed(LEFT_BUTTON) && player.dir != 3) {
-            player.dir = 3;
+        // if (arduboy.justPressed(LEFT_BUTTON) && player.dir != 3) {
+        //     player.dir = 3;
+        //     return;
+        // } 
+        // else if (arduboy.justPressed(RIGHT_BUTTON) && player.dir != 1) {
+        //     player.dir = 1;
+        //     return;
+        // } 
+        // else if (arduboy.justPressed(UP_BUTTON) && player.dir != 0) {
+        //     player.dir = 0;
+        //     return;
+        // } 
+        // else if (arduboy.justPressed(DOWN_BUTTON) && player.dir != 2) {
+        //     player.dir = 2;
+        //     return;
+        // }
+
+        if (arduboy.justPressed(LEFT_BUTTON)) {
+
+            if (player.dir != 3) {
+                player.dir = 3;
+            }
+            else {
+                player.setHoldingGun(false);
+            }
+
             return;
+
         } 
-        else if (arduboy.justPressed(RIGHT_BUTTON) && player.dir != 1) {
-            player.dir = 1;
+        else if (arduboy.justPressed(RIGHT_BUTTON)) {
+
+            if (player.dir != 1) {
+                player.dir = 1;
+            }
+            else {
+                player.setHoldingGun(false);
+            }
+
             return;
+
         } 
-        else if (arduboy.justPressed(UP_BUTTON) && player.dir != 0) {
-            player.dir = 0;
+        else if (arduboy.justPressed(UP_BUTTON)) {
+        
+            if (player.dir != 0) {
+                player.dir = 0;
+            }
+            else {
+                player.setHoldingGun(false);
+            }
+
             return;
+
         } 
         else if (arduboy.justPressed(DOWN_BUTTON) && player.dir != 2) {
-            player.dir = 2;
+        
+            if (player.dir != 2) {
+                player.dir = 2;
+            }
+            else {
+                player.setHoldingGun(false);
+            }
+
             return;
+
         }
 
+        if (arduboy.justPressed(B_BUTTON)) {
+
+            arduboy.previousButtonState = 0;
+            arduboy.currentButtonState = 0;
+            player.setHoldingGun(false);
+            return;
+        
+        }
+        
         if (arduboy.justPressed(A_BUTTON) && !bullet.isActive()) {
         
             if (player.getBulletCount() > 0) {
@@ -375,7 +431,7 @@ void updatePlayer() {
 
     }
 
-    if (player.vx == 0 && player.vy == 0 && player.x % Constants::TileSize == 0 && player.y % Constants::TileSize == 0) {
+    else if (player.vx == 0 && player.vy == 0 && player.x % Constants::TileSize == 0 && player.y % Constants::TileSize == 0) {
 
         if (arduboy.pressed(LEFT_BUTTON) && maze.isWalkable(level, tileX - 1, tileY)) {
             player.vx = -2;

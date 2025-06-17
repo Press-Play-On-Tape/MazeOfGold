@@ -6,6 +6,7 @@
 #include "src/Menu.h"
 #include "src/Maze.h"
 #include "src/Player.h"
+#include "src/EEPROM_Utils.h"
 
 #define DEBUG_BREAK    asm volatile("break\n");
 
@@ -31,7 +32,7 @@ uint8_t level = 0;
 uint8_t mapLevel = 0;
 uint8_t showEnemyCursors = 0;
 uint8_t show = 0;
-uint8_t displayChests = 0;
+uint8_t displayChestsCounter = 0;
 uint8_t enableMaps = 0;
 uint8_t menuCursor = 0;
 
@@ -45,6 +46,8 @@ void setup() {
 	arduboy.setFrameRate(25);
 	randomSeed(arduboy.generateRandomSeed());
 	
+  	EEPROM_Utils::initEEPROM(false);
+
 }
 
 void loop() {
@@ -127,21 +130,22 @@ void loop() {
 			updateCamera();
 			updateEnemys(level);
 			checkCollisions(level);
-			drawMaze(level);
-			drawChests(level);
-			drawEnemies(level);
-			drawItems(level);
-			drawPlayer();
-			drawDeath();
-			drawPuff();
-			drawBullet();	
-			drawFlashlight();    
+			// drawMaze(level);
+			// drawChests(level);
+			// drawEnemies(level);
+			// drawItems(level);
+			// drawPlayer();
+			// drawDeath();
+			// drawPuff();
+			// drawBullet();	
+			// drawFlashlight();    
+			drawStuff();
 
-			if (displayChests > 0) {
+			if (displayChestsCounter > 0) {
 
 				Sprites::drawOverwrite(0, 26, Images::ChestsCollected, 0);
 				Sprites::drawOverwrite(98, 26, Images::ChestsCollected_Numbers, 9 - maze.getActiveChests());
-				displayChests--;
+				displayChestsCounter--;
 			
 			}
 
@@ -158,34 +162,67 @@ void loop() {
 			break;
 
 		case GameState::GameOver:
-			darkMode = false;
-			darkModeCounter = -256;
+			{
+				darkMode = false;
+				darkModeCounter = -256;
+				uint16_t score = clearedLevel * 10 + (10 - maze.getActiveChests());
 
-			drawMaze(level);
-			drawChests(level);
-			drawEnemies(level);
-			drawPlayer();
-			drawDeath();
-			drawPuff();
-			drawFlashlight();    
+				// drawMaze(level);
+				// drawChests(level);
+				// drawEnemies(level);
+				// drawPlayer();
+				// drawDeath();
+				// drawPuff();
+				// drawFlashlight();   
+				drawStuff(); 
 
-			Sprites::drawOverwrite(0, 26, Images::GameOver, 0);
+				Sprites::drawOverwrite(0, 24, Images::GameOver, 0);
 
-			if (arduboy.justPressed(A_BUTTON)) {
-				gameState = GameState::Menu_Init;
+				if (arduboy.justPressed(A_BUTTON)) {
+
+					if (score >= EEPROM_Utils::getScore()) {
+						EEPROM_Utils::saveScore(score);
+					}
+
+					gameState = GameState::HighScore;
+				}
+
 			}
+
+			break;
+
+		case GameState::HighScore:
+			{
+				uint16_t score = clearedLevel * 10 + (10 - maze.getActiveChests());
+				Sprites::drawOverwrite(0, 24, Images::HighScore_Banner, 0);
+
+				if ((score >= EEPROM_Utils::getScore() && arduboy.frameCount % 36 < 18) || score < EEPROM_Utils::getScore()) {
+
+					renderHighScore(score);
+
+				}
+
+				if (arduboy.justPressed(A_BUTTON)) {
+
+					gameState = GameState::Menu_Init;
+
+				}
+
+			}
+
 			break;
 
 		case GameState::LevelUp:
-			drawMaze(level);
-			drawChests(level);
-			drawEnemies(level);
-			drawPlayer();
-			drawDeath();
-			drawPuff();
-			drawFlashlight();    
+			// drawMaze(level);
+			// drawChests(level);
+			// drawEnemies(level);
+			// drawPlayer();
+			// drawDeath();
+			// drawPuff();
+			// drawFlashlight();    
+			drawStuff();
 
-			Sprites::drawOverwrite(0, 26, Images::LevelUp, 0);
+			Sprites::drawOverwrite(0, 24, Images::LevelUp, 0);
 
 			if (arduboy.justPressed(A_BUTTON)) {
 
@@ -204,6 +241,20 @@ void loop() {
 
 }
 
+void drawStuff() {
+
+	drawMaze(level);
+	drawChests(level);
+	drawItems(level);
+	drawEnemies(level);
+	drawPlayer();
+	drawDeath();
+	drawPuff();
+	drawBullet();
+	drawFlashlight();   
+
+}
+
 void startGame(bool clearInventory) {
 
 	uint8_t stairsPlaced = 0;
@@ -219,7 +270,7 @@ void startGame(bool clearInventory) {
 	menu.y = 0;
 	menu.top = 0;
 
-	displayChests = 0;
+	displayChestsCounter = 0;
 	arduboy.frameCount == 0;
 	darkMode = false;
 	darkModeCounter = -256;
@@ -228,7 +279,7 @@ void startGame(bool clearInventory) {
 
 void handleDarkMode() {
 
-	if (darkModeCounter == -256 && arduboy.frameCount > 512 && (level == 1 || clearedLevel > 1) && random(512) == 0) {
+	if (darkModeCounter == -256  && (level == 1 || clearedLevel > 1 || (level == 0 && clearedLevel == 0 && arduboy.frameCount > 4096)) && random(512) == 0) {
 		darkModeCounter = 312;
 	}
 

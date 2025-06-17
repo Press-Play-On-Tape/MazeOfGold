@@ -356,7 +356,7 @@ class Maze {
                 //         item.y = 1 * Constants::TileSize;
                 //     }
 
-                //     item.itemType = ItemType::Candle;
+                //     item.itemType = ItemType::Gun;
                 //     continue;
 
                 // }
