@@ -1,4 +1,4 @@
-#include <Arduboy2Core.h>
+#include "src/Arduboy2Ext.h"
 #include <Sprites.h>
 
 

@@ -1,4 +1,4 @@
-#include <Arduboy2Core.h>
+#include "src/Arduboy2Ext.h"
 #include <Sprites.h>
 #include "src/Enums.h"
 #include "src/Images.h"
@@ -10,7 +10,7 @@
 
 #define DEBUG_BREAK    asm volatile("break\n");
 
-Arduboy2 arduboy;
+Arduboy2Ext arduboy;
 
 
 // Camera offset
@@ -57,6 +57,9 @@ void loop() {
 	arduboy.pollButtons();
 	arduboy.clear();
 
+	uint8_t justPressed = arduboy.justPressedButtons();
+	uint8_t pressed = arduboy.pressedButtons();
+
 	switch (gameState) {
 
 		case GameState::PPOT:
@@ -80,15 +83,15 @@ void loop() {
 			Sprites::drawOverwrite(19, 44, Images::Cursors, menuCursor == 1 || arduboy.frameCount % 40 < 20 ? showEnemyCursors : 2);
 			Sprites::drawOverwrite(19, 52, Images::EnableMaps, menuCursor == 0 || arduboy.frameCount % 40 < 20 ? enableMaps : 2);
 
-			if (arduboy.justPressed(UP_BUTTON)) {
+			if (justPressed & UP_BUTTON) {
 				menuCursor = 0;
 			}
 
-			if (arduboy.justPressed(DOWN_BUTTON)) {
+			if (justPressed & DOWN_BUTTON) {
 				menuCursor = 1;
 			}
 
-			if (arduboy.justPressed(LEFT_BUTTON)) {
+			if (justPressed & LEFT_BUTTON) {
 
 				if (menuCursor == 0) {
 					showEnemyCursors = 0;
@@ -99,7 +102,7 @@ void loop() {
 
 			}
 
-			if (arduboy.justPressed(RIGHT_BUTTON)) {
+			if (justPressed & RIGHT_BUTTON) {
 
 				if (menuCursor == 0) {
 					showEnemyCursors = 1;
@@ -110,7 +113,7 @@ void loop() {
 
 			}
 
-			if (arduboy.justPressed(A_BUTTON)) {
+			if (justPressed & A_BUTTON) {
 
 				randomSeed(arduboy.generateRandomSeed());
 				gameState = GameState::GamePlay;
@@ -130,15 +133,6 @@ void loop() {
 			updateCamera();
 			updateEnemys(level);
 			checkCollisions(level);
-			// drawMaze(level);
-			// drawChests(level);
-			// drawEnemies(level);
-			// drawItems(level);
-			// drawPlayer();
-			// drawDeath();
-			// drawPuff();
-			// drawBullet();	
-			// drawFlashlight();    
 			drawStuff();
 
 			if (displayChestsCounter > 0) {
@@ -167,18 +161,11 @@ void loop() {
 				darkModeCounter = -256;
 				uint16_t score = clearedLevel * 10 + (10 - maze.getActiveChests());
 
-				// drawMaze(level);
-				// drawChests(level);
-				// drawEnemies(level);
-				// drawPlayer();
-				// drawDeath();
-				// drawPuff();
-				// drawFlashlight();   
 				drawStuff(); 
 
 				Sprites::drawOverwrite(0, 24, Images::GameOver, 0);
 
-				if (arduboy.justPressed(A_BUTTON)) {
+				if (justPressed & A_BUTTON) {
 
 					if (score >= EEPROM_Utils::getScore()) {
 						EEPROM_Utils::saveScore(score);
@@ -202,7 +189,7 @@ void loop() {
 
 				}
 
-				if (arduboy.justPressed(A_BUTTON)) {
+				if (justPressed & A_BUTTON) {
 
 					gameState = GameState::Menu_Init;
 
@@ -224,7 +211,7 @@ void loop() {
 
 			Sprites::drawOverwrite(0, 24, Images::LevelUp, 0);
 
-			if (arduboy.justPressed(A_BUTTON)) {
+			if (justPressed & A_BUTTON) {
 
 				if (maze.getEnemyCount() < Constants::MaxEnemys / 2) maze.setEnemyCount(maze.getEnemyCount() + 1);
 

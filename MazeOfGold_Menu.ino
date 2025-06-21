@@ -1,4 +1,4 @@
-#include <Arduboy2Core.h>
+#include "src/Arduboy2Ext.h"
 #include <Sprites.h>
 
 void handleMenu_MoveUp() {
@@ -51,6 +51,8 @@ void handleMenu_MoveDown() {
 
 void handleMenu() {
 
+    uint8_t justPressed = arduboy.justPressedButtons();
+
     updateCamera();
     updateEnemys(level);
     checkCollisions(level);
@@ -67,19 +69,19 @@ void handleMenu() {
     drawMenu();
 
 
-    if (arduboy.justPressed(UP_BUTTON)) {
+    if (justPressed & UP_BUTTON) {
 
         handleMenu_MoveUp();
 
     }
 
-    if (arduboy.justPressed(DOWN_BUTTON)) {
+    if (justPressed & DOWN_BUTTON) {
 
         handleMenu_MoveDown();
 
     }
 
-    if (arduboy.justPressed(A_BUTTON) && menu.x == 128 - 22) {
+    if ((justPressed & A_BUTTON) && menu.x == 128 - 22) {
 
         uint8_t playerX = player.x / Constants::TileSize;
         uint8_t playerY = player.y / Constants::TileSize;
@@ -185,7 +187,7 @@ void handleMenu() {
 
     }
 
-    if (arduboy.justPressed(B_BUTTON)) {
+    if (justPressed & B_BUTTON) {
 
         menu.direction = MenuDirection::Closing;
         
@@ -194,6 +196,9 @@ void handleMenu() {
 }
 
 void handleMenu_ShowMap() {
+
+    uint8_t pressed = arduboy.pressedButtons();
+    uint8_t justPressed = arduboy.justPressedButtons();
 
     updateEnemys(level);
     checkCollisions(level);
@@ -205,22 +210,22 @@ void handleMenu_ShowMap() {
     Sprites::drawOverwrite(92, 2, Images::HUD_Maze, mapLevel);
     drawChestCount(102, 16);
 
-    if (arduboy.pressed(LEFT_BUTTON)) {
+    if (pressed & LEFT_BUTTON) {
         mapLevel = 0;
     }
-    if (arduboy.pressed(RIGHT_BUTTON)) {
+    if (pressed & RIGHT_BUTTON) {
         mapLevel = 1;
     }
 
-    if (arduboy.pressed(UP_BUTTON) && camera_Small.y > 0) {
+    if ((pressed & UP_BUTTON) && camera_Small.y > 0) {
         camera_Small.y--;
     }
 
-    if (arduboy.pressed(DOWN_BUTTON) && camera_Small.y < 26) {
+    if ((pressed & DOWN_BUTTON) && camera_Small.y < 26) {
         camera_Small.y++;
     }
 
-    if (arduboy.justPressed(B_BUTTON)) {
+    if (justPressed & B_BUTTON) {
         gameState = GameState::ShowMenu;
         menu.direction = MenuDirection::Closing;
     }

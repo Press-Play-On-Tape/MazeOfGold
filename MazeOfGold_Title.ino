@@ -1,4 +1,4 @@
-#include <Arduboy2Core.h>
+#include "src/Arduboy2Ext.h"
 #include <Sprites.h>
 #include "src/Enums.h"
 
@@ -35,6 +35,8 @@ void updateAndDrawCoins() {
 
 void handleTitle() {
 
+    uint8_t justPressed = arduboy.justPressedButtons();
+
     updateAndDrawCoins();
 
     Sprites::drawExternalMask(0, 22, Images::Title, Images::Title_Mask, 0, 0);
@@ -60,7 +62,7 @@ void handleTitle() {
 
     }
 
-    if (arduboy.justPressed(A_BUTTON)) {
+    if (justPressed & A_BUTTON) {
 
         gameState = GameState::Menu_Select;
 

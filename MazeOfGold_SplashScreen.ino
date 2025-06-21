@@ -1,8 +1,10 @@
-#include <Arduboy2.h>
+#include "src/Arduboy2Ext.h"
 
 void splashScreen() { 
 
-    if (arduboy.justPressed(A_BUTTON | B_BUTTON) > 0) {
+    uint8_t justPressed = arduboy.justPressedButtons();
+
+    if (justPressed & (A_BUTTON | B_BUTTON)) {
         
         gameState = GameState::Menu_Init; 
         arduboy.frameCount == 0;

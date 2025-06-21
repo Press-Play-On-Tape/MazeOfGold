@@ -33,6 +33,24 @@ class Player {
 
         }
 
+        bool hasItem(ItemType item) {
+        
+            if (this->inventoryCount == Constants::InventoryCount) return false;
+
+            for (uint8_t i = 0; i < Constants::InventoryCount; i++) {
+            
+                if (this->inventory[i] == item) {
+
+                    return true;
+
+                }
+
+            }
+
+            return false;
+
+        }
+
         bool removeItem(uint8_t idx) {
         
             for (uint8_t i = idx + 1; i < Constants::InventoryCount; i++) {

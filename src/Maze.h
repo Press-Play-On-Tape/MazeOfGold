@@ -361,6 +361,25 @@ class Maze {
 
                 // }
 
+                // if (i == 1) {
+
+                //     Item &item = this->items[i];
+                //     item.level = level;
+
+                //     if (this->getCell(level, 1, 3) == CellTypes::Empty) {
+                //         item.x = 1 * Constants::TileSize;
+                //         item.y = 3 * Constants::TileSize;
+                //     }
+                //     else {
+                //         item.x = 3 * Constants::TileSize;
+                //         item.y = 1 * Constants::TileSize;
+                //     }
+
+                //     item.itemType = ItemType::Bullets;
+                //     continue;
+
+                // }
+
                 do {
 
                     x = random(5, Constants::MazeWidth - 1);

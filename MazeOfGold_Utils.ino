@@ -1,4 +1,4 @@
-#include <Arduboy2Core.h>
+#include "src/Arduboy2Ext.h"
 #include <Sprites.h>
 
 
@@ -207,7 +207,6 @@ void checkCollisions(uint8_t level) {
         switch (item.itemType) {
 
             case ItemType::Bomb:
-            case ItemType::Bullets:
             case ItemType::Key:
             case ItemType::Candle:
 
@@ -217,6 +216,30 @@ void checkCollisions(uint8_t level) {
 
                         item.reset();
 
+                    }
+                    
+                }
+
+                break;
+
+            case ItemType::Bullets:
+
+                if (arduboy.collide(itemRect, playerRect)) { 
+
+                    if (player.hasItem(ItemType::Gun) && player.getBulletCount() == 0) {
+
+                        player.setBulletCount(player.getBulletCount() + 2);
+                        item.reset();
+                        
+                    }
+                    else {
+
+                        if (player.addItem(item.itemType)) {
+
+                            item.reset();
+
+                        }
+                        
                     }
                     
                 }
@@ -299,6 +322,7 @@ void checkCollisions(uint8_t level) {
 
 void updatePlayer() {
 
+    uint8_t justPressed = arduboy.justPressedButtons();
 	uint8_t tileX = player.x / Constants::TileSize;
 	uint8_t tileY = player.y / Constants::TileSize;
 
@@ -306,24 +330,7 @@ void updatePlayer() {
 
     if (player.isHoldingGun()) {
 
-        // if (arduboy.justPressed(LEFT_BUTTON) && player.dir != 3) {
-        //     player.dir = 3;
-        //     return;
-        // } 
-        // else if (arduboy.justPressed(RIGHT_BUTTON) && player.dir != 1) {
-        //     player.dir = 1;
-        //     return;
-        // } 
-        // else if (arduboy.justPressed(UP_BUTTON) && player.dir != 0) {
-        //     player.dir = 0;
-        //     return;
-        // } 
-        // else if (arduboy.justPressed(DOWN_BUTTON) && player.dir != 2) {
-        //     player.dir = 2;
-        //     return;
-        // }
-
-        if (arduboy.justPressed(LEFT_BUTTON)) {
+        if (justPressed & LEFT_BUTTON) {
 
             if (player.dir != 3) {
                 player.dir = 3;
@@ -335,7 +342,7 @@ void updatePlayer() {
             return;
 
         } 
-        else if (arduboy.justPressed(RIGHT_BUTTON)) {
+        else if (justPressed & RIGHT_BUTTON) {
 
             if (player.dir != 1) {
                 player.dir = 1;
@@ -347,7 +354,7 @@ void updatePlayer() {
             return;
 
         } 
-        else if (arduboy.justPressed(UP_BUTTON)) {
+        else if (justPressed & UP_BUTTON) {
         
             if (player.dir != 0) {
                 player.dir = 0;
@@ -359,7 +366,7 @@ void updatePlayer() {
             return;
 
         } 
-        else if (arduboy.justPressed(DOWN_BUTTON) && player.dir != 2) {
+        else if ((justPressed & DOWN_BUTTON)) {
         
             if (player.dir != 2) {
                 player.dir = 2;
@@ -372,7 +379,7 @@ void updatePlayer() {
 
         }
 
-        if (arduboy.justPressed(B_BUTTON)) {
+        if (justPressed & B_BUTTON) {
 
             arduboy.previousButtonState = 0;
             arduboy.currentButtonState = 0;
@@ -381,7 +388,7 @@ void updatePlayer() {
         
         }
         
-        if (arduboy.justPressed(A_BUTTON) && !bullet.isActive()) {
+        if ((justPressed & A_BUTTON) && !bullet.isActive()) {
         
             if (player.getBulletCount() > 0) {
                 
@@ -433,30 +440,32 @@ void updatePlayer() {
 
     else if (player.vx == 0 && player.vy == 0 && player.x % Constants::TileSize == 0 && player.y % Constants::TileSize == 0) {
 
-        if (arduboy.pressed(LEFT_BUTTON) && maze.isWalkable(level, tileX - 1, tileY)) {
+        uint8_t pressed = arduboy.pressedButtons();
+
+        if ((pressed & LEFT_BUTTON) && maze.isWalkable(level, tileX - 1, tileY)) {
             player.vx = -2;
             player.dir = 3;
         } 
-        else if (arduboy.pressed(RIGHT_BUTTON) && maze.isWalkable(level, tileX + 1, tileY)) {
+        else if ((pressed & RIGHT_BUTTON) && maze.isWalkable(level, tileX + 1, tileY)) {
             player.vx = 2;
             player.dir = 1;
         } 
-        else if (arduboy.pressed(UP_BUTTON) && maze.isWalkable(level, tileX, tileY - 1)) {
+        else if ((pressed & UP_BUTTON) && maze.isWalkable(level, tileX, tileY - 1)) {
             player.vy = -2;
             player.dir = 0;
         } 
-        else if (arduboy.pressed(DOWN_BUTTON) && maze.isWalkable(level, tileX, tileY + 1)) {
+        else if ((pressed & DOWN_BUTTON) && maze.isWalkable(level, tileX, tileY + 1)) {
             player.vy = 2;
             player.dir = 2;
         }
-        else if (arduboy.pressed(B_BUTTON)) {
+        else if (pressed & B_BUTTON) {
 
             menu.direction = MenuDirection::Openning;
             menu.x = 128;
             gameState = GameState::ShowMenu;
 
         }
-        else if (arduboy.pressed(A_BUTTON) && arduboy.frameCount > 32) {
+        else if ((pressed & A_BUTTON) && arduboy.frameCount > 32) {
 
             if (player.getItemIdx(ItemType::Gun) != Constants::NoItem) {
             
